@@ -1,0 +1,224 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+
+        <li><a href="{:url('assess/lists')}">绩效列表</a></li>
+        <li class="active"><a>评分详情</a></li>
+    </ul>
+    <div class="row margin-top-20">
+        <div class="col-md-2">
+            <div class="list-group">
+                <a class="list-group-item" href="#A" data-toggle="tab">出勤统计</a>
+                <a class="list-group-item" href="#B" data-toggle="tab">周评分</a>
+                <a class="list-group-item" href="#C" data-toggle="tab">月评分</a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="tab-content">
+                <div class="tab-pane active" id="A">
+                    <table class="table table-bordered">
+                        出勤情况
+                    </table>
+                    <div style="float: left">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th width="120">事假</th>
+                                <td style="width:250px">
+                                    <input disabled  type="text" class="form-control" name="post[personal_leave]" value="{$ass.personal_leave|default=''}" style="width:250px" placeholder="次">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="120">迟到</th>
+                                <td style="width:250px">
+                                    <input disabled  type="text" class="form-control" name="post[late]" value="{$ass.late|default=''}" style="width:250px" placeholder="次">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="120">旷工</th>
+                                <td style="width:250px">
+                                    <input disabled  type="text" class="form-control" name="post[abs]" value="{$ass.abs|default=''}" style="width:250px" placeholder="次">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="width:1%;height: 40px;float:left"></div>
+                    <div style="float: left">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th width="120">病假</th>
+                                <td style="width:250px">
+                                    <input disabled  type="text" class="form-control" name="post[sick_leave]" value="{$ass.sick_leave|default=''}" style="width:250px" placeholder="次">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="120">早退</th>
+                                <td style="width:250px">
+                                    <input disabled  type="text" class="form-control" name="post[ear]" value="{$ass.ear|default=''}" style="width:250px" placeholder="次">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="120">违规</th>
+                                <td style="width:250px">
+                                    <input disabled  type="text" class="form-control" name="post[fraud]" value="{$ass.fraud|default=''}" style="width:250px" placeholder="次">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane" id="B">
+                    <?php for($i=0;$i<count($ass['cknl']);$i++){ ?>
+                    <table class="table table-bordered">
+                        &nbsp&nbsp第{$i+1}周：
+                        <tr>
+                            <th width="200">工作态度</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >服从工作安排，自我提升意识强，工作责任心强，有吃苦耐劳精神。</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="cknl[]" value="{$ass['cknl'][$i]|default=''}" style="width:150px" placeholder="最高8分">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th width="200">工作能力</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >效率高，在保证质量的前提下能在计划内完成工作。</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="wcgz[]" value="{$ass['wcgz'][$i]|default=''}" style="width:150px" placeholder="最高8分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">工作能力</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >应变能力强，工作配合度及执行力好。</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="zxlh[]" value="{$ass['zxlh'][$i]|default=''}" style="width:150px" placeholder="最高8分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">工作情况</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >主动设定自己的工作计划，按时交工作计划总结，不拖拉</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="btl[]" value="{$ass['btl'][$i]|default=''}" style="width:150px" placeholder="最高8分">
+                            </td>
+                        </tr>
+                    </table>
+                    <?php } ?>
+
+                </div>
+
+
+
+
+                <div class="tab-pane" id="C">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th width="200">专业技能</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >掌握本职工作基本知识和技能，按时完成所分配的任务。</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="post[dota]" value="{$ass['dota']|default=''}" style="width:150px" placeholder="最高8分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">专业技能</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >主动钻研岗位专业知识，不断提高技术业务水平。</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="post[ywsp]" value="{$ass['ywsp']|default=''}" style="width:150px" placeholder="最高2分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">团队合作</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >团队合作良好，非常愉快的完成团队的任务。</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="post[team]" value="{$ass['team']|default=''}" style="width:150px" placeholder="最高5分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">售后维护</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >定时售后维护，发现问题及时报告和处理。</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="post[report]" value="{$ass['report']|default=''}" style="width:150px" placeholder="最高5分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">日常交流</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >同事之间关系融洽，善于沟通和表达。</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="post[represe]" value="{$ass['represe']|default=''}" style="width:150px" placeholder="最高2分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">工作报告</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >本月订单完成情况10-100%</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="post[wanc]" value="{$ass['wanc']|default=''}" style="width:150px" placeholder="最高20分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">工作报告</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >本月订单质量情况10-100%</div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="post[zhil]" value="{$ass['zhil']|default=''}" style="width:150px" placeholder="最高20分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">部门总监评分</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" ><input disabled  type="text" class="form-control fl" name="post[zjpy]" value="{$ass['zjpy']|default=''}" style="width:550px" ></div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="post[zj]" value="{$ass['zj']|default=''}" style="width:150px" placeholder="最高5分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">总经理评分</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" ><input disabled  type="text" class="form-control fl" name="post[zjlpy]" value="{$ass['zjlpy']|default=''}" style="width:550px"></div>
+                            </td>
+                            <td style="width:200px">
+                                <input disabled  type="text" class="form-control fl" name="post[zjl]" value="{$ass['zjl']|default=''}" style="width:150px" placeholder="最高5分">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">备注</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" ><input disabled  type="text" class="form-control fl" name="post[commit]" value="{$ass['commit']|default=''}" style="width:550px"></div>
+                            </td>
+                            <td style="width:200px">
+
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+        </div>
+    </div>
+
+    </div>
+
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<include file="public@header"/>
+
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('assess/gradelist')}">按月排列</a></li>
+        <li><a href="{:url('assess/sx_gradelist')}">实习生列表</a></li>
+        <li class="active"><a>实习生评分</a></li>
+    </ul>
+    <form action="{:url('assess/sx_grade_add')}" method="post" class="layui-form form-horizontal js-ajax-form margin-top-20">
+    <input type="hidden" name="user_id" value="{$user.id}">
+     <input type="hidden" name="id" value="{$pfdata.id|default=""}">
+        <div class="row">
+            <div class="col-md-9">
+                <h3>实习生月度评分表</h3>
+                <table class="table table-bordered">
+                    <caption>实习生信息</caption>
+                    <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>岗位</th>
+                            <th>实习时间</th>
+                            <th>考核时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{$user['user_login']}</td>
+                            <td>{$user['roleName']}</td>
+                            <td>{$user['sx_time']|date="Y年m月d日",###}到{$user['rz_time']|date="Y年m月d日",###}</td>
+                            <td><select name="assess_time" class="form-control" onchange="selectOnchangne(this);">
+                                <volist name="$user['assess_time']" id='vo'>
+                                <option value="{$vo}" data-url="{:url('assess/sx_grade',['userid'=>$user['id'],'assess_time'=>$vo])}" <?php if($assess_time==$vo){?>selected<?php } ?> >{$vo|date="Y年m月d日",###}</option>
+                                </volist>
+                            </select></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                 <!----------------------------------------->
+                <div style="width: 100%;height: auto;overflow: hidden;">
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th width="200">学习/工作态度(自评)</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >热爱本职工作，实习态度端正，谦虚主动。(8分)</div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[td_1]" value="{$pf['td_1']|default=''}" style="width:150px" min="0" max="8"  placeholder="最高8分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>                       
+                        </tr>
+                        <tr>
+                            <th width="200">学习/工作态度(自评)</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >工作耐心、细致、周到，服务意识强。(8分)</div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[td_2]" value="{$pf['td_2']|default=''}" min="0" max="8"  style="width:150px" placeholder="最高8分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>                       
+                        </tr>
+                        <tr>
+                            <th width="200">学习/工作态度(自评)</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >服从工作安排，工作配合度及执行力好。(8分)</div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[td_3]" value="{$pf['td_3']|default=''}" min="0" max="8"  style="width:150px" placeholder="最高8分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>                       
+                        </tr>
+                        <tr>
+                            <th width="200">学习/工作态度(自评)</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >工作责任心强，有吃苦耐劳的精神。(8分)</div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[td_4]" value="{$pf['td_4']|default=''}" style="width:150px" min="0" max="8"  placeholder="最高8分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>                       
+                        </tr>
+                        <tr>
+                            <th width="200">学习/工作态度(自评)</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >善于思考和钻研，发现问题及时报告。(3分)</div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[td_5]" value="{$pf['td_5']|default=''}" style="width:150px"  min="0" max="3" placeholder="最高3分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>                       
+                        </tr>
+                        <tr>
+                            <th width="200">业务技能(自评)</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >学以致用，把所学知识较好地运用到实践当中去。(10分)</div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[jn_1]" value="{$pf['jn_1']|default=''}" style="width:150px" min="0" max="10" placeholder="最高10分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">业务技能(自评)</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >工作岗位专业知识和技术业务水平。(15分)</div>
+                                <div>内容：<input class="form-control" name="py[ywjn_1]" type="text"  placeholder="请填写内容"  value="{$py['ywjn_1']|default=''}"   <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?> ></div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[jn_2]" value="{$pf['jn_2']|default=''}" min="0" max="15" style="width:150px" placeholder="最高15分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">业务技能(自评)</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >自我提升能力。(5分)</div>
+                                <div>内容：<input class="form-control" name="py[ywjn_2]"  type="text"  placeholder="请填写内容" value="{$py['ywjn_2']|default=''}"  <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?> ></div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[jn_3]" value="{$pf['jn_3']|default=''}" min="0" max="5" style="width:150px" placeholder="最高5分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">日常交流(自评)</th>
+                            <td style="width:600px">
+                                <div class="fl"  style="width:550px" >同事之间关系融洽，善于沟通和表达。(5分)</div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[jl_1]" value="{$pf['jl_1']|default=''}" min="0" max="5" style="width:150px" placeholder="最高5分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">工作报告</th>
+                            <td style="width:600px">
+                                <div class="fl">后期工作是否能独立完成10-100%。(20分)</div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[bg_1]" value="{$pf['bg_1']|default=''}"  min="0" max="20" style="width:150px" placeholder="最高20分" <?php if(cmf_get_current_admin_id()!=$user['id']){?> disabled <?php } ?>>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">部门总监评分(5分)</th>
+                            <td style="width:600px">
+                                <div class="fl"><input class="form-control" name="py[zj_1]"  placeholder="请填写内容"   type="py[zj_1]" <?php if($leaderid!=cmf_get_current_admin_id()){?> disabled <?php } ?> ></div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[zj_1]" value="{$pf['zj_1']|default=''}" min="0" max="5" style="width:150px" placeholder="最高5分" <?php if($leaderid!=cmf_get_current_admin_id()){?> disabled <?php } ?> >
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">公司领导评分(5分)</th>
+                            <td style="width:600px">
+                                <div class="fl"><input class="form-control" name="py[zjl_1]" type="text"  placeholder="请填写内容"    value="{$py['zjl_1']|default=''}" <?php if(!in_array(cmf_get_current_admin_id(),$rootAdmins)){?> disabled <?php } ?>  ></div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control pf" name="pf[zjl_1]" value="{$pf['zjl_1']|default=''}" min="0" max="5" style="width:150px" placeholder="最高5分" <?php if(!in_array(cmf_get_current_admin_id(),$rootAdmins)){?> disabled <?php } ?> >
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200"></th>
+                            <td style="width:600px">
+                                <div class="fl" style="text-align: right;">总分</div>
+                            </td>
+                            <td style="width:200px">
+                                <input type="number" class="form-control zpf" name="sum" value="{$pfdata.sum|default=''}" min="0" max="100" style="width:150px" placeholder="最高100分" readonly>
+                            </td>
+                        </tr>
+
+                     </table>
+
+            <!-------------------------------->
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <?php if(empty($pfdata)){?>
+                            <input type="submit" class="btn btn-primary" name="submit" value="提交">
+                            <?php } else{?>
+                            <input type="submit" class="btn btn-primary" name="submit" value="保存">
+                            <?php }?>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script>
+$(function(){
+    $('.pf').on('change',function(){
+        var sum=0;
+        $('.pf').each(function(){
+            sum+=parseInt(($(this).val()=="")?0:$(this).val());
+            $('.zpf').val(sum);
+        })
+    });
+}); 
+
+function selectOnchangne(s){
+
+    var url=$(s).find('option:selected').data('url');
+    window.location.href=url;
+}
+</script>
+
+</body>
+</html>

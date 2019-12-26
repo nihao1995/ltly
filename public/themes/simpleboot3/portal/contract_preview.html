@@ -1,0 +1,91 @@
+<include file="public@head" />
+<head>
+	<meta charset="utf-8">
+</head>
+
+<body style="margin:0px;padding: 0px;">
+	<include file="public@nav"/>
+
+	<div class="editContainer" style="width:1020px;margin-left:auto;margin-right:auto;margin-top: 20px;border: 0;">
+		<div style="margin-bottom: 20px;">
+			<h3 class="bg-primary" style="text-indent: 2em;height: 50px;line-height: 50px;">合同内容</h3>
+			<button class="btn btn-primary" id="print-button" style="z-index: 10; float: right;">打印合同</button>
+		</div>
+		
+		<div class="editArea" style="">
+			<div class="editor" id="showHT" style="min-height: 500px;margin: 0 auto;padding: 0px 10px; border:none;outline: none; overflow: hidden;line-height: 45px;">{$mb|default="合同内容"}
+			</div>
+		</div>
+	</div>
+
+	<div class="editContainer" style="width:1020px;min-height:500px;margin-left:auto;margin-right:auto;border:0;">
+		<div>
+			<h3 class="bg-primary" style="height: 50px;line-height: 50px;text-indent: 2em;">开发细则内容</h3>
+			<button class="btn btn-primary" id="print-button1" style="z-index: 10; float: right;">打印细则</button>
+		</div>
+		<div class="editArea">
+			<div class="editor"  id="showHT1" style="min-height: 500px;margin: 10px auto;padding: 10px; border:none;outline: none; overflow: hidden;" >{$mb1|default="开发细则等内容"}
+			</div>
+		</div>
+	</div>
+
+</body>
+<script src="__STATIC__/js/jquery.jqprint-0.3.js"></script>
+<script>
+	jQuery.browser={};
+	(function(){
+		jQuery.browser.msie=false; 
+		jQuery.browser.version=0;
+		if(navigator.userAgent.match(/MSIE ([0-9]+)./)){ 
+			jQuery.browser.msie=true;
+			jQuery.browser.version=RegExp.$1;
+		}
+	})();	
+		
+
+
+
+
+
+jQuery(document).ready(function($) {
+	var stage={$stage_info};
+	var table=stage.table;
+
+	/*$.each(stage_info,function(index,value){
+		console.log(value);
+			$('.mb_stage_info').append('<tr></tr>');
+			var td="";
+			td+="<td>"+value.stage+"</td>"
+						+"<td>"+value.content+"</td>"
+						+"<td>"+value.amount+"</td>"
+						+"<td>"+value.time+"</td>";
+			$('.mb_stage_info>tr').append(td);
+	});*/
+	for (var i = 0; i < table.length; i++) {
+		var td="";
+		td="<tr ><td>"+table[i].stage+"</td>"
+		+"<td>"+table[i].content+"</td>"
+		+"<td>"+table[i].amount+"</td></tr>'";
+		$('.mb_stage_info').append(td);
+	}
+
+	//打印按钮
+	$('#print-button').click(function(event) {
+		console.log("打印合同");
+		$('#showHT').jqprint();/*
+	bdhtml=window.document.body.innerHTML;//获取当前页的html代码  
+	sprnstr="<!--startprint-->";//设置打印开始区域  
+	eprnstr="<!--endprint-->";//设置打印结束区域  
+	prnhtml=bdhtml.substring(bdhtml.indexOf(sprnstr)+17); //从开始代码向后取html  
+	prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));//从结束代码向前取html 
+	window.document.body.innerHTML=prnhtml;  
+	window.print(); */
+	});
+	$('#print-button1').click(function(event) {
+		console.log("打印细则");
+		$('#showHT1').jqprint();
+	});
+});
+
+</script>
+</html>

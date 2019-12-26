@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>配置详情</title>
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+        </style>
+</head>
+<body>
+    <div class="wrap js-check-wrap">
+        <ul class="nav nav-tabs">
+            <li><a href="javascript:history.go(-1);" >返回</a></li>
+            <li class="active"><a>接口详情</a></li>
+        </ul>
+        <!-- 这里是详情内容 -->
+        <div class="col-md-12" style="padding: 20px 20px;">
+            {$supplyInfo.remark|default="无说明"}
+        </div>
+    </div>
+<include file='public/scripts'>
+<script src="__STATIC__/js/layer/layer.js"></script>
+<script src="__STATIC__/js/custom/custom.js"></script>
+</body>
+</html>

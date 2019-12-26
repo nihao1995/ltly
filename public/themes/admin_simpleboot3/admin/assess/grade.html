@@ -1,0 +1,425 @@
+<include file="public@header"/>
+
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('assess/gradelist')}">按月排列</a></li>
+        <li class="active"><a>评分</a></li>
+    </ul>
+    <form action="{:url('assess/add_gr')}" method="post" class="layui-form form-horizontal js-ajax-form margin-top-20">
+        <?php if(isset($id)){ ?>
+        <input type="hidden" name="id" value="{$id}">
+        <?php } ?>
+        <?php if(isset($userid)){ ?>
+        <input type="hidden" name="post[userid]" value="{$userid}">
+        <input type="hidden" name="post[time]" value="{$time}">
+        <?php } ?>
+
+        <div class="row">
+            <div class="col-md-9">
+                 <!----------------------------------------->
+                 <div style="width: 100%;height: auto;overflow: hidden;">
+                 <table class="table table-bordered">
+                  每周考评
+                  </table>
+
+                <table class="table table-bordered">
+                    &nbsp&nbsp第一周：
+                    <tr>
+                        <th width="200">工作态度</th>
+                        <td style="width:600px">
+                            <div class="fl"  style="width:550px" >服从工作安排，自我提升意识强，工作责任心强，有吃苦耐劳精神。</div>
+                        </td>
+                        <td style="width:200px">
+                            <input type="text" class="form-control fl" name="cknl[]" value="{$ass['cknl'][0]|default=''}" style="width:150px" placeholder="最高8分">
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <th width="200">工作能力</th>
+                        <td style="width:600px">
+                            <div class="fl"  style="width:550px" >效率高，在保证质量的前提下能在计划内完成工作。</div>
+                        </td>
+                        <td style="width:200px">
+                            <input type="text" class="form-control fl" name="wcgz[]" value="{$ass['wcgz'][0]|default=''}" style="width:150px" placeholder="最高8分">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="200">工作能力</th>
+                        <td style="width:600px">
+                            <div class="fl"  style="width:550px" >应变能力强，工作配合度及执行力好。</div>
+                        </td>
+                        <td style="width:200px">
+                            <input type="text" class="form-control fl" name="zxlh[]" value="{$ass['zxlh'][0]|default=''}" style="width:150px" placeholder="最高8分">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="200">工作情况</th>
+                        <td style="width:600px">
+                            <div class="fl"  style="width:550px" >主动设定自己的工作计划，按时交工作计划总结，不拖拉</div>
+                        </td>
+                        <td style="width:200px">
+                            <input type="text" class="form-control fl" name="btl[]" value="{$ass['btl'][0]|default=''}" style="width:150px" placeholder="最高8分">
+                        </td>
+                    </tr>
+                 </table>
+                     <table class="table table-bordered">
+                         &nbsp&nbsp第二周：
+                         <tr>
+                             <th width="200">工作态度</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >服从工作安排，自我提升意识强，工作责任心强，有吃苦耐劳精神。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="cknl[]" value="{$ass['cknl'][1]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+
+                         </tr>
+                         <tr>
+                             <th width="200">工作能力</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >效率高，在保证质量的前提下能在计划内完成工作。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="wcgz[]" value="{$ass['wcgz'][1]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作能力</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >应变能力强，工作配合度及执行力好。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="zxlh[]" value="{$ass['zxlh'][1]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作情况</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >主动设定自己的工作计划，按时交工作计划总结，不拖拉</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="btl[]" value="{$ass['btl'][1]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                     </table>
+                     <table class="table table-bordered">
+                         &nbsp&nbsp第三周：
+                         <tr>
+                             <th width="200">工作态度</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >服从工作安排，自我提升意识强，工作责任心强，有吃苦耐劳精神。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="cknl[]" value="{$ass['cknl'][2]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+
+                         </tr>
+                         <tr>
+                             <th width="200">工作能力</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >效率高，在保证质量的前提下能在计划内完成工作。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="wcgz[]" value="{$ass['wcgz'][2]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作能力</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >应变能力强，工作配合度及执行力好。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="zxlh[]" value="{$ass['zxlh'][2]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作情况</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >主动设定自己的工作计划，按时交工作计划总结，不拖拉</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="btl[]" value="{$ass['btl'][2]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                     </table>
+                     <table class="table table-bordered">
+                         &nbsp&nbsp第四周：
+                         <tr>
+                             <th width="200">工作态度</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >服从工作安排，自我提升意识强，工作责任心强，有吃苦耐劳精神。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="cknl[]" value="{$ass['cknl'][3]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+
+                         </tr>
+                         <tr>
+                             <th width="200">工作能力</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >效率高，在保证质量的前提下能在计划内完成工作。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="wcgz[]" value="{$ass['wcgz'][3]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作能力</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >应变能力强，工作配合度及执行力好。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="zxlh[]" value="{$ass['zxlh'][3]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作情况</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >主动设定自己的工作计划，按时交工作计划总结，不拖拉</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="btl[]" value="{$ass['btl'][3]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                     </table>
+                     <?php if(isset($ass['btl'][4])){ ?>
+                     <table class="table table-bordered">
+                         <a class="btn btn-primary" id="tj" onclick="doshow()" style="display: none">添加</a>
+                         <a class="btn btn-danger" id="sc" onclick="dohide()">删除</a>
+                     </table>
+                     <table class="table table-bordered" id="no5">
+                         <p class='smljp'>&nbsp&nbsp第五周：</p>
+                         <tr>
+                             <th width="200">工作态度</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >服从工作安排，自我提升意识强，工作责任心强，有吃苦耐劳精神。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="cknl[]" value="{$ass['cknl'][4]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+
+                         </tr>
+                         <tr>
+                             <th width="200">工作能力</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >效率高，在保证质量的前提下能在计划内完成工作。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="wcgz[]" value="{$ass['wcgz'][4]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作能力</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >应变能力强，工作配合度及执行力好。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="zxlh[]" value="{$ass['zxlh'][4]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作情况</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >主动设定自己的工作计划，按时交工作计划总结，不拖拉</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="btl[]" value="{$ass['btl'][4]|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                     </table>
+                     <?php }else{ ?>
+                     <table class="table table-bordered">
+                         <a class="btn btn-primary" id="tj" onclick="doshow()">添加</a>
+                         <a class="btn btn-danger" id="sc" onclick="dohide()" style="display: none">删除</a>
+                     </table>
+
+                     <?php } ?>
+                     <div style="width:1%;height: 40px;float:left"></div>
+                     <table class="table table-bordered">
+                         每月考评
+                     </table>
+                     <table class="table table-bordered">
+                         <tr>
+                             <th width="200">专业技能</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >掌握本职工作基本知识和技能，按时完成所分配的任务。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="post[dota]" value="{$ass['dota']|default=''}" style="width:150px" placeholder="最高8分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">专业技能</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >主动钻研岗位专业知识，不断提高技术业务水平。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="post[ywsp]" value="{$ass['ywsp']|default=''}" style="width:150px" placeholder="最高2分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">团队合作</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >团队合作良好，非常愉快的完成团队的任务。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="post[team]" value="{$ass['team']|default=''}" style="width:150px" placeholder="最高5分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">售后维护</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >定时售后维护，发现问题及时报告和处理。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="post[report]" value="{$ass['report']|default=''}" style="width:150px" placeholder="最高5分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">日常交流</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >同事之间关系融洽，善于沟通和表达。</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="post[represe]" value="{$ass['represe']|default=''}" style="width:150px" placeholder="最高2分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作报告</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >本月订单完成情况10-100%</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="post[wanc]" value="{$ass['wanc']|default=''}" style="width:150px" placeholder="最高20分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">工作报告</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" >本月订单质量情况10-100%</div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="post[zhil]" value="{$ass['zhil']|default=''}" style="width:150px" placeholder="最高20分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">部门总监评分</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" ><input type="text" class="form-control fl" name="post[zjpy]" value="{$ass['zjpy']|default=''}" style="width:550px" ></div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="post[zj]" value="{$ass['zj']|default=''}" style="width:150px" placeholder="最高5分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">总经理评分</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" ><input type="text" class="form-control fl" name="post[zjlpy]" value="{$ass['zjlpy']|default=''}" style="width:550px"></div>
+                             </td>
+                             <td style="width:200px">
+                                 <input type="text" class="form-control fl" name="post[zjl]" value="{$ass['zjl']|default=''}" style="width:150px" placeholder="最高5分">
+                             </td>
+                         </tr>
+                         <tr>
+                             <th width="200">备注</th>
+                             <td style="width:600px">
+                                 <div class="fl"  style="width:550px" ><input type="text" class="form-control fl" name="post[commit]" value="{$ass['commit']|default=''}" style="width:550px"></div>
+                             </td>
+                             <td style="width:200px">
+
+                             </td>
+                         </tr>
+
+                     </table>
+                     </div>
+                 <!----------------------------------------->
+
+                     </div>
+                     </div>
+
+
+
+        <div style="float: left"></div>
+
+
+
+            <!--<div class="layui-form-item layui-form-text">
+              <label class="layui-form-label">编辑器</label>
+              <div class="layui-input-block">
+                <textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="LAY_demo_editor"></textarea>
+              </div>
+            </div>-->
+
+
+
+
+
+        <!-------------------------------->
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <input type="submit" class="btn btn-primary" name="submit" value="提交">
+                    </div>
+                </div>
+
+
+</form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script>
+    function doshow() {
+        $('#sc').after("<table class=\"table table-bordered\" id=\"no5\">\n" +
+            "                        <p class='smljp'>&nbsp&nbsp第五周：</p>" +
+            "                         <tr>\n" +
+            "                             <th width=\"200\">工作态度</th>\n" +
+            "                             <td style=\"width:600px\">\n" +
+            "                                 <div class=\"fl\"  style=\"width:550px\" >服从工作安排，自我提升意识强，工作责任心强，有吃苦耐劳精神。</div>\n" +
+            "                             </td>\n" +
+            "                             <td style=\"width:200px\">\n" +
+            "                                 <input type=\"text\" class=\"form-control fl\" name=\"cknl[]\" style=\"width:150px\" placeholder=\"最高8分\">\n" +
+            "                             </td>\n" +
+            "\n" +
+            "                         </tr>\n" +
+            "                         <tr>\n" +
+            "                             <th width=\"200\">工作能力</th>\n" +
+            "                             <td style=\"width:600px\">\n" +
+            "                                 <div class=\"fl\"  style=\"width:550px\" >效率高，在保证质量的前提下能在计划内完成工作。</div>\n" +
+            "                             </td>\n" +
+            "                             <td style=\"width:200px\">\n" +
+            "                                 <input type=\"text\" class=\"form-control fl\" name=\"wcgz[]\" style=\"width:150px\" placeholder=\"最高8分\">\n" +
+            "                             </td>\n" +
+            "                         </tr>\n" +
+            "                         <tr>\n" +
+            "                             <th width=\"200\">工作能力</th>\n" +
+            "                             <td style=\"width:600px\">\n" +
+            "                                 <div class=\"fl\"  style=\"width:550px\" >应变能力强，工作配合度及执行力好。</div>\n" +
+            "                             </td>\n" +
+            "                             <td style=\"width:200px\">\n" +
+            "                                 <input type=\"text\" class=\"form-control fl\" name=\"zxlh[]\" style=\"width:150px\" placeholder=\"最高8分\">\n" +
+            "                             </td>\n" +
+            "                         </tr>\n" +
+            "                         <tr>\n" +
+            "                             <th width=\"200\">工作情况</th>\n" +
+            "                             <td style=\"width:600px\">\n" +
+            "                                 <div class=\"fl\"  style=\"width:550px\" >主动设定自己的工作计划，按时交工作计划总结，不拖拉</div>\n" +
+            "                             </td>\n" +
+            "                             <td style=\"width:200px\">\n" +
+            "                                 <input type=\"text\" class=\"form-control fl\" name=\"btl[]\" style=\"width:150px\" placeholder=\"最高8分\">\n" +
+            "                             </td>\n" +
+            "                         </tr>\n" +
+            "                     </table>");
+        $('#sc').show();
+        $('#tj').hide();
+    }
+    function dohide() {
+        $('#sc').hide();
+        $('#tj').show();
+        $('#no5').remove();
+        $('.smljp').remove();
+    }
+</script>
+
+
+</body>
+</html>

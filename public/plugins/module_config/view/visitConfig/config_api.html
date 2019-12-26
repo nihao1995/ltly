@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>配置需求接口</title>
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+        </style>
+</head>
+<body>
+    <div class="wrap js-check-wrap">
+        <div class="well"> 
+           接口查询 <input type="text" class="form-control" style="width: 300px;display: inline-block;" name="kws">
+            <a class="btn btn-success" onclick="searchApi();">搜索</a>
+            <a class="btn btn-danger" onclick="$('input[name=kws]').val('');searchApi();">清除</a>
+        </div>
+        <table class="table table-bordered table-hover" >
+            <thead>
+                <tr>
+                    <th>*</th>
+                    <th width="50">序号</th>
+                    <th>模块名</th>
+                    <th>模块标识</th>
+                    <th>接口地址</th>
+                    <th>接口说明</th>
+                    <th>接口状态</th>
+                    <th>接口详情</th>
+                </tr>
+            </thead>
+            <tbody class="tb-body">
+                <?php $x = 0 ;?>
+                <volist name="supplyList" id = "vo">
+                <tr onclick="selectRow(this);" style="cursor: pointer;">
+                     <?php if( empty($vo['api']) ){ continue; }?>
+                    <td><input type="radio" name="select_api" value="{$vo.api}" <?php if($vo['api'] == $api ){echo 'checked';}?> ></td>
+                    <td><?php echo ++$x ;?></td>
+                    <td>{$vo.name}</td>
+                    <td>{:cmf_parse_name($vo.symbol)}</td>
+                    <td>{$vo.api}</td>
+                    <td>{$vo.explain}</td>
+                    <td class="td-status" data-tag= "{$vo['status']}">
+                        <if condition = "$vo['status'] eq 1" >
+                                <span style = "color:green;">正常</span>
+                            <elseif condition= "$vo['status'] eq 0">
+                                <span style = "color:#BF080E;">未实现</span>
+                            <else />
+                                <span style = "color:#D56A21;">未配置</span>
+                        </if>
+                    </td>
+                    <td>
+                        <a href="{:cmf_plugin_url('ModuleConfig://DemandConfig/showApiInfo')}?moduleName={$vo.symbol}&id={$key}" class="btn btn-info btn-sm" onclick="window.event? window.event.cancelBubble = true : e.stopPropagation();">查看</a>
+                    </td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </div>
+    <include file='public/scripts'>
+<script src="__STATIC__/js/layer/layer.js"></script>
+<script src="__STATIC__/js/custom/custom.js"></script>
+<script>
+    //获取配置数据
+    var configData = function(){
+        var api = '';
+        $('.tb-body tr').each(function(){
+            var radio = $(this).find('input[type=radio]');
+            if( radio.is(':checked') ){
+                api = $(this).find('input[type=radio]').val();
+            }
+        });
+        return api;
+    }
+
+    var selectRow = function(_this){
+        $(_this).find('input[type=radio]').prop('checked',true);
+    }
+
+    //搜索
+    var searchApi = function(){
+        var value = $('input[name=kws]').val();
+        $('.tb-body tr').each(function(){
+            if( value == '' ){
+                $(this).css('display','');
+            }else{
+                var explain = $(this).find('td:eq(5)').text();
+                var api = $(this).find('td:eq(4)').text();
+                if( explain.indexOf(value)!=-1 || api.indexOf(value)!=-1 ){
+                    $(this).css('display','');
+                }else{
+                    $(this).css('display','none');
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

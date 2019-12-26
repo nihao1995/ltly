@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>数据表配置管理</title>
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+        </style>
+</head>
+<body>
+    <div class="wrap js-check-wrap">
+
+        <!-- <h3>字段缺失</h3> -->
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="theader">
+                    <th width="100"><input type="checkbox" name="zy_bat_all_ck"></th>
+                    <th width="100">字段名</th>
+                    <th width="100">数据类型</th>
+                    <th width="100">长度</th>
+                    <th width="100">默认</th>
+                    <th width="100">空</th>
+                    <th width="100">主键</th>
+                    <th width="100">自增</th>
+                    <th width="100">注释</th>
+                </tr>
+            </thead>
+            
+            <tbody class="table-body">
+                <volist name="field_info" id="item">
+                <tr>
+                    <td><input type="checkbox" <if $item.status==1>checked="" disabled  <else/> value="{$item.name}" </if> name="zy_bat_ck"></td>
+                    <td>{$item.name}</td>
+                    <td>{$item.type}</td>
+                    <td>{$item.length}</td>
+                    <td>{$item.default}</td>
+                    <td><input type="checkbox" <if $item.default=='NULL'>checked=""</if> disabled></td>
+                    <td><input type="checkbox" <if $item.auto==1>checked=""</if> disabled></td>
+                    <td><input type="checkbox" <if $item.increase==1>checked=""</if> disabled></td>
+                    <td>{$item.annotation}</td>
+                </tr>
+                </volist>
+            </tbody>
+
+        </table>
+    </div>
+    <include file='public/scripts'>
+    <script src="__STATIC__/js/layer/layer.js"></script>
+    <script src="__STATIC__/js/custom/custom.js"></script>
+
+
+    <script type="text/javascript">
+        /**
+         * 获取窗口中的元素，然后返回给父级
+         * @return {[type]} [description]
+         */
+        function callbackdata(){
+            var field = '';
+            $("input[name=zy_bat_ck]:checked").each(function(){
+                if($(this).val()!="on"){
+                    field = $(this).val()+','+field;
+                }
+            })
+            let moduleKey = "{$module_info[0]}";
+            let modulesName = "{$module_info[1]}";
+            let tableName = "{$module_info[2]}";
+
+            var mycars = new Array();
+            mycars['moduleKey'] = moduleKey;
+            mycars['modulesName'] = modulesName;
+            mycars['tableName'] = tableName;
+            mycars['field'] = field;
+
+            return mycars;
+        }
+
+
+    </script>
+
+</body>
+</html>

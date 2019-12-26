@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑</title>
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/backend.min.css" rel="stylesheet" type="text/css">
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+			.layui-icon{font-size: 14px !important;}
+			.layui-form-label{ width: auto;}
+			.layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+			.mr4{ margin-right: 4px;}
+			.layui-form-item{ margin-bottom: 0px;}
+			.row{ margin: 0 !important;}
+			.form-horizontal .form-group { margin: 0 0 15px 0}
+        </style>
+</head>
+<body>
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+			<div id="content">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="content">
+							<form id="edit-form" class="form-horizontal nice-validator n-default n-bootstrap">
+								<h2>基本信息</h2>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块名:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input class="form-control" id="module-name" name="name" type="text"  value="" placeholder="模块中文名" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块标识:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input class="form-control" id="module-symbol" name="title" type="text" onkeyup ="checkModuleMenu(this);" value="" placeholder="模块英文名(大驼峰命名，如：ModuleConfig)" autocomplete="off" required>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="c-keywords" class="control-label col-xs-12 col-sm-2">版本号:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input id="c-keywords" onkeyup="checkVersionNumber(this);" class="form-control" name="version" type="text" value="" autocomplete="off" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">简介:</label>
+									<div class="col-xs-12 col-sm-8">
+										<textarea id="c-description" class="form-control" name="describe" required></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">功能介绍:</label>
+									<div class="col-xs-12 col-sm-8">
+										<textarea id="c-description" class="form-control" name="introduce" required></textarea>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">温馨提示:</label>
+									<div class="col-xs-12 col-sm-8">
+										<textarea id="c-description" class="form-control" name="warning"></textarea>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">预览图:</label>
+									<div class="col-xs-12 col-sm-8">
+										<div class="input-group">
+											<!-- <input id="image_info" class="form-control" size="35" name="row[image]" type="text" value="/fastadmin/public/assets/img/qrcode.png"> -->
+											<div class="input-group-addon no-border no-padding">
+												<span style="position: relative;">
+													<input type="" name="preview" required>
+													<button type="button" class="btn btn-danger plupload" style="position: relative; z-index: 1;" id="image_upload"><i class="fa fa-upload"></i> 上传文件</button>
+												</span>
+												<!-- <span>
+													<button type="button" class="btn btn-primary fachoose"><i class="fa fa-list"></i> 选择</button>
+												</span> -->
+											</div>
+											<span class="msg-box n-right"></span>
+										</div>
+										<ul class="row list-inline plupload-preview" id="image_list"></ul>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">收费方式:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input class="form-control" name="price" type="text" value="" placeholder="填写0即为免费，填写大于0即为收费">
+									</div>
+								</div>
+
+								<h2>数据内容</h2>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">思维导图:</label>
+									<div class="col-xs-12 col-sm-8">
+										<div class="input-group">
+											<input id="image_info" class="form-control" size="35" name="mind_map_url" type="text" value="" placeholder="填写URL地址">
+											<input name="mind_map" type="hidden" value="">
+											<div class="input-group-addon no-border no-padding">
+												<span style="position: relative;">
+													<button type="button" class="btn btn-danger plupload" style="position: relative; z-index: 1;" id="image_upload"><i class="fa fa-upload"></i> 上传文件</button>
+												</span>
+												<!-- <span>
+													<button type="button" class="btn btn-primary fachoose"><i class="fa fa-list"></i> 选择</button>
+												</span> -->
+											</div>
+											<span class="msg-box n-right"></span>
+										</div>
+										<ul class="row list-inline plupload-preview" id="image_list"></ul>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">流程图:</label>
+									<div class="col-xs-12 col-sm-8">
+										<div class="input-group">
+											<input id="image_info" class="form-control" size="35" name="flow_chart_url" type="text" value="" placeholder="填写URL地址">
+											<input name="flow_chart" type="hidden" value="">
+											<div class="input-group-addon no-border no-padding">
+												<span style="position: relative;">
+													<button type="button" class="btn btn-danger plupload" style="position: relative; z-index: 1;" id="image_upload"><i class="fa fa-upload"></i> 上传文件</button>
+												</span>
+												<!-- <span>
+													<button type="button" class="btn btn-primary fachoose"><i class="fa fa-list"></i> 选择</button>
+												</span> -->
+											</div>
+											<span class="msg-box n-right"></span>
+										</div>
+										<ul class="row list-inline plupload-preview" id="image_list"></ul>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">UI设计图:</label>
+									<div class="col-xs-12 col-sm-8">
+										<div class="input-group">
+											<input id="image_info" class="form-control" size="35" name="ui_url" type="text" value="" placeholder="填写URL地址">
+											<input name="ui" type="hidden" value="">
+											<div class="input-group-addon no-border no-padding">
+												<span style="position: relative;">
+													<button type="button" class="btn btn-danger plupload" style="position: relative; z-index: 1;" id="image_upload"><i class="fa fa-upload"></i> 上传文件</button>
+												</span>
+												<!-- <span>
+													<button type="button" class="btn btn-primary fachoose"><i class="fa fa-list"></i> 选择</button>
+												</span> -->
+											</div>
+											<span class="msg-box n-right"></span>
+										</div>
+										<ul class="row list-inline plupload-preview" id="image_list"></ul>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">摸块压缩包:</label>
+									<div class="col-xs-12 col-sm-8">
+										<div class="input-group">
+											<!-- <input id="image_info" class="form-control" size="35" name="row[image]" type="text" value="/fastadmin/public/assets/img/qrcode.png"> -->
+											<div class="input-group-addon no-border no-padding">
+												<span style="position: relative;">
+													<button type="button" class="btn btn-danger plupload" style="position: relative; z-index: 1;" id="image_upload"><i class="fa fa-upload"></i> 上传文件</button>
+												</span>
+												<!-- <span>
+													<button type="button" class="btn btn-primary fachoose"><i class="fa fa-list"></i> 选择</button>
+												</span> -->
+											</div>
+											<span class="msg-box n-right"></span>
+										</div>
+										<ul class="row list-inline plupload-preview" id="image_list"></ul>
+									</div>
+								</div>								
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    
+	<script src="__PLUGIN_TMPL__/public/assets/layui/layui.all.js"></script>
+	<include file='public/scripts'>
+
+	<script>
+	$(function(){
+		;!function(){
+			var layer = layui.layer
+			,form = layui.form
+			,$ = layui.jquery
+		    ,upload = layui.upload;
+
+			$('.plupload-preview').on('click','.btn-trash',function(){
+				$('#image_list li').remove();
+				$('#image_info').val('');
+			})
+
+			//普通图片上传
+			upload.render({
+				elem: '#image_upload'
+				,url: ''
+				,before: function(obj){
+					  //预读本地文件示例，不支持ie8
+					obj.preview(function(index, file, result){
+						$('#image_list').append('<li class="col-xs-3"><a href="" data-url="#" target="_blank" class="thumbnail"><img src="'+result+'" class="img-responsive"></a><a href="javascrispt:;" class="btn btn-danger btn-xs btn-trash"><i class="fa fa-trash"></i></a></li>')
+					});
+				}
+				,done: function(res){
+				    console.log(res);
+				}
+				,error: function(){
+					layer.msg('上传失败');
+				}
+			});
+			//多图片上传
+		    upload.render({
+				elem: '#images_upload'
+				,url: ''
+				,multiple: true
+				,before: function(obj){
+				  //预读本地文件示例，不支持ie8
+				  obj.preview(function(index, file, result){
+					  $('#images_list').append('<li class="col-xs-3"><a href="" data-url="#" target="_blank" class="thumbnail"><img src="'+result+'" alt="'+ file.name +'" class="img-responsive"></a><a href="javascrispt:;" class="btn btn-danger btn-xs btn-trash"><i class="fa fa-trash"></i></a></li>')
+				  });
+				}
+				,done: function(res){
+				  //上传完毕
+				}
+		    });
+		}();
+	})
+	</script>
+<script type="text/javascript">
+	var formData = function(){
+		var formData = $($('#edit-form').serializeArray());
+		var tmp = {};
+		var flag = true;
+		$.each(formData,function( index , value ){
+			$('[name='+value.name+']').css('border','');
+			if( $.trim( value.value ) == ""  &&  ( $('[name='+value.name+']').attr('required') != undefined )  ){
+				$('[name='+value.name+']').css('border','1px solid red');
+				flag = false;
+				return false;
+			}
+			tmp [ value.name ] = value.value;
+		});
+		console.log(isOk);
+		console.log(flag);
+		isOk = ( flag && isOk );
+		
+		console.log(tmp);
+		return {isOk:isOk,data:tmp}
+	}
+
+//模块菜单验证
+var isRequest = false;
+var isOk = true;
+var checkModuleMenu = function(_this){
+	var moduleName = $('#module-name').val();
+	var moduleSymbol = $('#module-symbol').val();
+	var url = "{:cmf_plugin_url('Appmarket://publish/checkModuleMenu')}";
+	if( isRequest ){ return false; }
+	isRequest = true;
+	$.post( url , {moduleName:moduleName,moduleSymbol:moduleSymbol} , function(data){
+		var color = "color:#9FE059";
+		isOk = (data.code == 200 ) ;
+		if( data.code != 200 ){
+			color = "color:red;";
+		}	
+		var warning = '<span style="'+color+'">'+data.message+'</span>';
+		$(_this).siblings().remove();
+		$(_this).after(warning);
+		isRequest = false;
+	} ,'json' );
+};
+
+//版本号验证
+var checkVersionNumber = function(_this){
+	var reg = /^\d+(\.\d+)+$/;
+	var versionStr = $(_this).val();
+	var flag = true;
+	if( false == reg.test( versionStr ) ){
+		flag = false;
+		var message = "版本号格式错误，请检查！";
+		if( $.trim( versionStr ) == '' ){
+			message = "请填写版本号！";
+		}
+		var warning = '<span style="color:red;">'+message+'</span>';
+		$(_this).siblings().remove();
+		$(_this).after(warning);
+	}else{ 
+		$(_this).siblings().remove();
+	}
+	isOk = ( isOk && flag );
+}
+</script>
+</body>
+</html>
+

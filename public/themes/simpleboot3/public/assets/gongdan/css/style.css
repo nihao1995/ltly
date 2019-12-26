@@ -1,0 +1,63 @@
+/*----------------------------------------通用属性----------------------------------------*/
+a, abbr, acronym, address, applet, b, big, blockquote, body, caption, center, cite, code, dd, del, dfn, dl, dt, em, fieldset, font, form, h1, h2, h3, h4, h5, h6, html, i, iframe, img, ins, kbd, label, legend, li, object, ol, p, pre, q, s, samp, small, span, strike, strong, sub, sup, table, tbody, td, tfoot, th, thead, tr, tt, u, ul, var { margin: 0; padding: 0; outline: 0; border: 0; background: 0 0; font-size: 100%; }
+ol, ul { list-style: none; }
+body, html { }
+body { margin: 0 auto; padding: 0; color: #333; background-color: #fff;}
+blockquote, q { quotes: none; }
+blockquote:after, blockquote:before, q:after, q:before { content: ''; }
+:focus { outline: 0; }
+ins { text-decoration: none; }
+del { text-decoration: line-through; }
+table { border-collapse: collapse; border-spacing: 0; }
+*, :after, :before { box-sizing: border-box; }
+/*影响padding内缩或者外扩*/
+* { margin: 0; padding: 0; border: 0; list-style: none; font-weight: 400;  list-style-type: none; }
+em, i { font-style: normal; }
+h1, h2, h3, h4, h5, h6 { font-weight: 400; }
+input { outline: 0; }
+a { color: #333; text-decoration: none!important; outline: 0; }
+a, img { border: 0; }
+img { max-width: 100%; }
+input[type="button"], input[type="submit"], input[type="reset"], textarea { -webkit-appearance: none; }
+/*去掉IOS自带样式*/
+.dis { display: block; }
+.clear { clear: both; }
+.fl { float: left; }
+.fr { float: right; }
+.zyl-bj { background: #55acee !important; }
+.zyl-zt { color: #55acee !important; }
+p, a, span, div { font-size: 15px }
+.mt10{margin-top: 10px;}
+.ml10{margin-left: 10px;}
+.mb10{margin-bottom: 10px;}
+.mr10{margin-right: 10px;}
+
+.pt10{padding-top: 10px;}
+.pl10{padding-left: 10px;}
+.pb10{padding-bottom: 10px;}
+.pr10{padding-right: 10px;}
+/*手机版电脑端去除*/
+/*----------我的工单------------*/
+.w-50 {width: 50%;}
+.w-10 {width: 10%;line-height: 100px;text-align: center;float: left;}
+.w-80 {width: 80%;text-align: left;float: left;padding-left: 5%;}
+.gd-mygd {margin-top: 211px;margin-bottom: 150px;}
+.gd-bk {border-bottom: 1px solid #ccc;border-top: 1px solid #ccc;padding: 20px 30px 30px 30px;}
+.gd-wz1 {color: #bbb}
+.gd-wz2 {color: #bbb;line-height: 50px;}
+.gd-wz3 {color: #bbb;font-size: 12px;font-style: italic;}
+.gd-wz4 {color: #bbb;line-height: 156px;float: right;}
+.gd-wz5 {color: #bbb;font-size: 14px;}
+
+.gd-bt200 { width: 100%; height: 200px; }
+.gd-bt50 { width: 100%; height: 50px; }
+.gd-bt80 { width: 100%; height: 80px; }
+.gd-bt20 { width: 100%; height: 20px; }
+.gd-fh-img { width: 25px; float: left; margin-right: 10px; }
+.gd-fh-line { line-height: 25px; }
+.gd-nr ul li { margin-bottom:20px;}
+.gd-nr ul li .gd-nr-bt { width: 20%; float: left; font-size: 18px; font-weight: 600; }
+.gd-nr ul li .gd-nr-nr { width: 80%; float: left }
+.gd-tj{padding: 15px 40px!important;border-radius:10000rem!important; }
+.gd-tj2{padding: 8px 20px!important;border-radius:10000rem!important; background: #eee;color: #383838;font-size: 14px;margin-right: 20px;}
+

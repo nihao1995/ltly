@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>应用市场</title>
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/backend.min.css" rel="stylesheet" type="text/css">
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+			.layui-icon{font-size: 14px !important;}
+			.layui-form-label{ width: auto;}
+			.layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+			.mr4{ margin-right: 4px;}
+			.layui-form-item{ margin-bottom: 0px;}
+			.row{ margin: 0 !important;}
+			.log-list .log-item {
+				margin-top: 20px;
+				padding: 5px 10px;
+				border-radius: 2px;
+				border:1px solid #ccc;
+				border-left: 2px solid red;
+			}
+			.log-list .log-item h5 span{
+				margin-right:10px; 
+				font-size: 12px;
+			}
+			.log-list .log-item img{
+				max-width: 100%;
+			}
+
+        </style>
+</head>
+<body>
+	<div class="wrap js-check-wrap" style="padding: 20px 20px 0px 20px;">
+	    <ul class="nav nav-tabs">
+	        <php> $currentTab = 3;</php>
+	        <include file="public/nav" />
+	    </ul>
+	    <div class="wrap js-check-wrap">
+	        <form class="well form-inline margin-top-20 layui-form" action="" method="get" accept-charset="utf-8">
+	            <div class="layui-form-item">
+	            	<div class="layui-inline">
+	            		<div class="btn-group" role="group" aria-label="" style="text-align: center;">
+						    <div id="moduleDevolopProcess"></div>
+						</div>
+					</div>
+			    </div>
+	        </form>
+	        <div class="col-md-12 log-list" style="margin-bottom: 150px;">
+	        	<if condition="$status eq 2">
+		    		<button type="button" class="btn btn-info" onclick="resubmit({$id|default=0} , {$status|default=0} );">重新提交</button>
+		    	</if>
+	        	<volist name="logList" id="vo">
+		        	<div class="log-item">
+		        		<h5><span style="color:#ccc;">#<?php echo (count($logList)-($key)); ?></span><span>发布人:{$vo.issue}</span><span>发布日期：{:date('Y/m/d H:i:s',$vo['add_time'])}</span></h5>
+		        		<p>{$vo.content}</p>
+		        	</div>
+	        	</volist>
+	        	<empty name ="logList">
+	        		暂无记录~
+	        	</empty>
+	        </div>
+	    </div>
+	</div>
+<script src="__PLUGIN_TMPL__/public/assets/layui/layui.all.js"></script>
+<include file='public/scripts'>
+<script>
+	var resubmit = function( id , status ){
+		var url = '{:cmf_plugin_url("Appmarket://publish/reSubmit")}';
+		$.post( url , { id:id , status:status } , function(data){
+			var icon  = ( data.code == 200 ) ? 1: 5;
+			layer.msg( data.message ,{ icon : icon } );
+			if( icon == 1 ){
+				setTimeout(function(){
+					window.location.href = data.data ;
+				} , 1000 );
+			}
+		} , 'json');
+	}
+</script>
+</body>
+</html>

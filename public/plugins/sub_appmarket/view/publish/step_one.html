@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑</title>
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/backend.min.css" rel="stylesheet" type="text/css">
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+			.layui-icon{font-size: 14px !important;}
+			.layui-form-label{ width: auto;}
+			.layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+			.mr4{ margin-right: 4px;}
+			.layui-form-item{ margin-bottom: 0px;}
+			.row{ margin: 0 !important;}
+			.form-horizontal .form-group { margin: 0 0 15px 0}
+        </style>
+</head>
+<body>
+	<div class="wrap js-check-wrap" style="padding: 20px 20px 0px 20px;">
+	    <ul class="nav nav-tabs">
+	        <php> $currentTab = 3 ;</php>
+	        <include file="public/nav" />
+	    </ul>
+	    <div class="well margin-top-20">
+			<div id="moduleDevolopProcess"></div>
+		</div>
+	</div>
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+			<div id="content">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="content">
+							<form id="edit-form" class="form-horizontal nice-validator n-default n-bootstrap">
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块标识:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input class="form-control" id="module-symbol" name="name" type="text" onkeyup ="checkModuleMenu(this);" value="{$module.name|default=''}" placeholder="请填写模块英文名(大驼峰命名，如：ModuleConfig)" autocomplete="off" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块菜单名:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input class="form-control" id="module-name"  name="title" type="text"  value="{$module.title|default=''}" placeholder="请填写模块中文名" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块分类:</label>
+									<div class="col-xs-12 col-sm-8">
+										<select class="form-control" name ="category" required placeholder="请选择分类"> 
+											<option value=''>请选择模块分类</option>
+											<volist name="category" id="vo">
+												<option value='{$vo.id}' <?php if( isset($module['category']) && $vo['id'] == $module['category']){echo 'selected';}?> >{$vo.name}</option>
+											</volist>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块简介:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input class="form-control"   name="describe" type="text"  value="{$module.describe|default=''}" placeholder="请填写模块简介信息" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="c-keywords" class="control-label col-xs-12 col-sm-2">版本号:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input id="c-keywords" onkeyup="checkVersionNumber(this);" class="form-control" name="version" type="text" value="{$module.version|default='1.0'}" autocomplete="off" required placeholder="请将数据填写版本号">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label for="c-keywords" class="control-label col-xs-12 col-sm-2">思维导图URL:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input id="image_info" class="form-control" size="35" name="mind_map_url" type="text" value="{$module.mind_map_url|default=''}" placeholder="填写思维导图URL地址" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="c-keywords" class="control-label col-xs-12 col-sm-2">流程图URL:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input id="image_info" class="form-control" size="35" name="flow_chart_url" type="text" value="{$module.flow_chart_url|default=''}" placeholder="填写流程图URL地址" required>
+									</div>
+								</div>
+								<!-- 是否存在模块id开始 -->
+								<if condition="!empty($module['id'])">
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">思维导图文件:</label>
+									<div class="col-xs-12 col-sm-8">
+										<div class="input-group">
+											<input name="mind_map" type="text" readonly="" value="{$module.mind_map|default=''}" class="form-control" placeholder="请上传思维导图文件(.zip文件)" >
+											<div class="input-group-addon no-border no-padding">
+												<span style="position: relative;">
+													<button type="button" class="btn btn-danger plupload" style="position: relative; z-index: 1;" id="mindMap"><i class="fa fa-upload"></i> 上传文件</button>
+												</span>
+												<!-- <span>
+													<button type="button" class="btn btn-primary fachoose"><i class="fa fa-list"></i> 选择</button>
+												</span> -->
+											</div>
+											<span class="msg-box n-right"></span>
+										</div>
+										<ul class="row list-inline plupload-preview" id="image_list"></ul>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">流程图文件:</label>
+									<div class="col-xs-12 col-sm-8">
+										<div class="input-group">
+											<input name="flow_chart"  type="text" class="form-control" readonly value="{$module.flow_chart|default=''}" placeholder="请上传流程图文件(.zip文件)" >
+											<div class="input-group-addon no-border no-padding">
+												<span style="position: relative;">
+													<?php ?>
+													<button type="button" class="btn btn-danger plupload" style="position: relative; z-index: 1;" id="flowChart" ><i class="fa fa-upload"></i> 上传文件</button>
+												</span>
+												<!-- <span>
+													<button type="button" class="btn btn-primary fachoose"><i class="fa fa-list"></i> 选择</button>
+												</span> -->
+											</div>
+											<span class="msg-box n-right"></span>
+										</div>
+										<ul class="row list-inline plupload-preview" id="image_list"></ul>
+									</div>
+								</div>
+								</if>
+								<!-- 是否存在模块id结束 -->
+								<div class="form-group">
+									<input type="hidden" id="audit-id" name="" value="{$module.id|default=0}">
+									<label for="c-keywords" class="control-label col-xs-12 col-sm-2">操作:</label>
+									<div class="col-xs-12 col-sm-8">
+										<a href="javascript:;" class="btn btn-primary" onclick="formData(this,'save');"><span class="glyphicon glyphicon-floppy-disk"></span>保存</a>
+										<if condition="!empty($module['id'])">
+											<a href="javascript:;" class="btn btn-success" onclick="formData(this,'audit');"><span class="glyphicon glyphicon-saved"></span>提交审核</a>
+										</if>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <include file='public/scripts'>
+	<script src="__PLUGIN_TMPL__/public/assets/layui/layui.all.js"></script>
+	<script src="__STATIC__/js/custom/custom.js"></script>
+<script type="text/javascript">
+var method = {};
+$(function(){
+	layui.use('upload', function(){
+		var $ = layui.jquery
+		,upload = layui.upload;
+
+		//上传思维导图
+		upload.render({ 
+			elem: '#mindMap'
+			,url: "{:cmf_plugin_url('Appmarket://publish/mindMap')}?id={$module.id|default=0}"
+			,accept: 'file' //普通文件
+			,exts: "zip|rar" //只允许上传压缩文件
+			,done: function( res ){				
+				showMessage( res, 'mind_map' , '#mindMap' );				
+			}
+		});
+
+		//上传流程图
+		upload.render({ 
+			elem: '#flowChart'
+			,url: "{:cmf_plugin_url('Appmarket://publish/flowChart')}?id={$module.id|default=0}"
+			,accept: 'file' //普通文件
+			,exts: "zip|rar" //只允许上传压缩文件
+			,done: function( res ){
+				showMessage( res , 'flow_chart' , '#flowChart' );				
+			}
+		});
+
+		//上传ui图 移至step_two
+		upload.render({ 
+			elem: '#uiMap'
+			,url: "{:cmf_plugin_url('Appmarket://publish/uiMap')}"
+			,accept: 'file' //普通文件
+			,exts: "zip|rar" //只允许上传压缩文件
+			,done: function( res ){
+				showMessage( res , 'ui' , '#uiMap' );				
+			}
+		});
+
+		var showMessage = function( data , inputName , id ){
+			var icon  = (data.code == 200 )? 1: 5;
+			layer.msg( data.message , { icon: icon });
+			if( icon == 1 ){
+				$('input[name='+inputName+']').val(data.data);
+			}
+		}
+	});
+});	
+
+</script>
+
+<script type="text/javascript"> 
+	var formData = function( _this , type ){
+		var formData = $($('#edit-form').serializeArray());
+		var tmp = {};
+		var flag = true;
+		var message = '请将数据填写完整后再提交！';
+		$.each(formData,function( index , value ){
+			$('[name='+value.name+']').css('border','');
+			if( $.trim( value.value ) == ""  &&  ( $('[name='+value.name+']').attr('required') != undefined )  ){
+				$('[name='+value.name+']').css('border','1px solid red');
+				flag = false;
+				message = $('[name='+value.name+']').attr('placeholder');
+				return false;
+			}
+			tmp [ value.name ] = value.value;
+		});
+		if( !isOk || !flag ){
+			layer.msg( message );
+			return false;
+		}
+		var id = $('#audit-id').val();
+		//提交审核检查
+		if( type == "audit" ){
+			if( id == 0 ){
+				layer.msg('请先保存后再提交审核！');
+				return false;
+			}
+			//思维导图文件上传
+			if( $.trim( $('[name=mind_map]').val() ) == ''  ){
+				layer.msg( $('[name=mind_map]').attr('placeholder') );
+				return false;
+			}		
+			//流程图文件上传	
+			if( $.trim( $('[name=flow_chart]').val() ) == ''  ){
+				layer.msg( $('[name=flow_chart]').attr('placeholder') );
+				return false;
+			}
+		}
+		banBtn(_this);
+		//提交数据
+		$.post( "{:cmf_plugin_url('Appmarket://publish/stepOnePost')}" , {id:id,type:type,data:tmp} ,function(data){
+			console.log(data);
+			var icon  = ( data.code == 200 ) ? 1 : 5;
+			layer.msg( data.message , { icon : icon });
+			if( data.code == 200 ){
+				if( data.data.res == 'id' ){
+					//数据保存成功
+					$('#audit-id').val(data.data.id);
+				} 
+				setTimeout(function(){
+					if( data.data.res == 'url' ){
+						//跳转页面到申请结果页面
+						window.location.href = data.data.url;
+					}else{
+						//跳转到编辑页面
+						window.location.href ="{:cmf_plugin_url('Appmarket://publish/publish')}?id="+data.data.id;
+					}
+				}, 1200);
+			}
+			cancelBan(_this);
+		},'json')
+	}
+
+//模块菜单验证
+var isRequest = false;
+var isOk = true;
+var checkModuleMenu = function(_this){
+	var moduleName = $('#module-name').val();
+	var moduleSymbol = $('#module-symbol').val();
+	var url = "{:cmf_plugin_url('Appmarket://publish/checkModuleMenu')}";
+	if( isRequest ){ return false; }
+	isRequest = true;
+	$('input[name=title]').removeAttr('readonly');
+	$('input[name=title]').val('');
+	$.post( url , {moduleName:moduleName,moduleSymbol:moduleSymbol} , function(data){
+		var color = "color:#9FE059";
+		isOk = (data.code == 200 ) ;
+		if( data.code != 200 ){
+			color = "color:red;";
+		}
+		if( data.code == 200 && !(data.data == undefined) ){
+			$('input[name=title]').attr('readonly',true);
+			$('input[name=title]').val(data.data);
+		}	
+		var warning = '<span style="'+color+'">'+data.message+'</span>';
+		$(_this).siblings().remove();
+		$(_this).after(warning);
+		isRequest = false;
+	} ,'json' );
+};
+
+//版本号验证
+var checkVersionNumber = function(_this){
+	var reg = /^\d+(\.\d+)+$/;
+	var versionStr = $(_this).val();
+	var flag = true;
+	if( false == reg.test( versionStr ) ){
+		flag = false;
+		var message = "版本号格式错误，请检查！";
+		if( $.trim( versionStr ) == '' ){
+			message = "请填写版本号！";
+		}
+		var warning = '<span style="color:red;">'+message+'</span>';
+		$(_this).siblings().remove();
+		$(_this).after(warning);
+	}else{ 
+		$(_this).siblings().remove();
+	}
+	isOk = ( isOk || flag );
+}
+</script>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,119 @@
+<include file="public@header"/>
+
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('assess/gradelist')}">按月排列</a></li>
+        <li class="active"><a>出勤</a></li>
+    </ul>
+    <form action="{:url('assess/add')}" method="post" class="layui-form form-horizontal js-ajax-form margin-top-20">
+        <?php if(isset($id)){ ?>
+        <input type="hidden" name="id" value="{$id}">
+        <?php } ?>
+        <?php if(isset($userid)){ ?>
+        <input type="hidden" name="post[userid]" value="{$userid}">
+        <input type="hidden" name="post[time]" value="{$time}">
+        <?php } ?>
+
+        <div class="row">
+            <div class="col-md-9">
+                 <!----------------------------------------->
+                 <div style="width: 100%;height: auto;overflow: hidden;">
+                 <table class="table table-bordered">
+                 
+                  出勤情况
+                
+                  </table>
+               <div style="float: left">
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="120">事假</th>
+                        <td style="width:250px">
+                            <input type="text" class="form-control" name="post[personal_leave]" value="{$ass.personal_leave|default=''}" style="width:250px" placeholder="次">
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <th width="120">迟到</th>
+                        <td style="width:250px">
+                            <input type="text" class="form-control" name="post[late]" value="{$ass.late|default=''}" style="width:250px" placeholder="次">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th width="120">旷工</th>
+                        <td style="width:250px">
+                            <input type="text" class="form-control" name="post[abs]" value="{$ass.abs|default=''}" style="width:250px" placeholder="次">
+                        </td>
+
+                    </tr>
+
+
+
+                     </table>
+                     </div>
+                     
+                     <div style="width:1%;height: 40px;float:left"></div>
+                     <div style="float: left">
+                      <table class="table table-bordered">
+                          <tr>
+                              <th width="120">病假</th>
+                              <td style="width:250px">
+                                  <input type="text" class="form-control" name="post[sick_leave]" value="{$ass.sick_leave|default=''}" style="width:250px" placeholder="次">
+                              </td>
+                          </tr>
+                          <tr>
+                              <th width="120">早退</th>
+                              <td style="width:250px">
+                                  <input type="text" class="form-control" name="post[ear]" value="{$ass.ear|default=''}" style="width:250px" placeholder="次">
+                              </td>
+                          </tr>
+                          <tr>
+                              <th width="120">违规</th>
+                              <td style="width:250px">
+                                  <input type="text" class="form-control" name="post[fraud]" value="{$ass.fraud|default=''}" style="width:250px" placeholder="次">
+                              </td>
+                          </tr>
+
+                     </table>	
+                     </div>
+                     </div>
+                 <!----------------------------------------->
+
+                     </div>
+                     </div>
+
+
+
+        <div style="float: left"></div>
+
+
+
+            <!--<div class="layui-form-item layui-form-text">
+              <label class="layui-form-label">编辑器</label>
+              <div class="layui-input-block">
+                <textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="LAY_demo_editor"></textarea>
+              </div>
+            </div>-->
+
+
+
+
+
+        <!-------------------------------->
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <input type="submit" class="btn btn-primary" name="submit" value="提交">
+                    </div>
+                </div>
+
+
+</form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+
+
+
+</body>
+</html>

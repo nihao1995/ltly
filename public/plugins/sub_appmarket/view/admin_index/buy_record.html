@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>应用市场</title>
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/backend.min.css" rel="stylesheet" type="text/css">
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+			.layui-icon{font-size: 14px !important;}
+			.layui-form-label{ width: auto;}
+			.layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+			.mr4{ margin-right: 4px;}
+			.layui-form-item{ margin-bottom: 0px;}
+			.row{ margin: 0 !important;}
+        </style>
+</head>
+<body>
+
+	<div class="wrap js-check-wrap" style="padding: 20px 20px 0px 20px;">
+	    <ul class="nav nav-tabs">
+	        <php> $currentTab = 2 ;</php>
+	        <include file="public/nav" />
+	    </ul>
+	</div>
+    <div class="wrap js-check-wrap">
+
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="theader">
+                    <th width="100">插件名称</th>
+                    <th width="250">介绍</th>
+                    <th width="50">支付金额</th>
+                    <th width="50">版本</th>
+                    <th width="80">支付方式</th>
+                    <th width="150">购买时间</th>
+                </tr>
+            </thead>
+            
+            <tbody class="table-body">
+            	<volist name ="list" id="vo">
+            		<tr>
+            			<td>{$vo.user_name}</td>
+            			<td>{$vo.user_name}</td>
+						<td>
+							<if condition = "$vo['payment_amount'] eq 0">
+									免费
+								<else>
+									￥{$vo.payment_amount}
+							</if>
+						</td>
+						<td>{$vo.user_name}</td>						
+						<td>
+							<span>
+								<if condition="$vo['payment_type'] eq 1" >
+										支付宝
+									<elseif condition="$vo['payment_type'] eq 2">
+										微信
+								</if>
+							</span>
+						</td>
+	                    <td>{:date('Y-m-d H:i:s',$vo.add_time)}</td>
+            		</tr>
+            	</volist>
+            </tbody>
+
+        </table>
+    </div>
+<script src="__PLUGIN_TMPL__/public/assets/layui/layui.all.js"></script>
+<include file='public/scripts'>
+
+<script src="__STATIC__/js/custom/custom.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<include file="public@header" />
+<style>
+  .list-show img{
+      
+  }
+</style>
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+      <li ><a href="{:url('user/businesscard')}">个人名片</a></li>
+      <li class="active"><a href="{:url('user/sign')}">电子签名</a></li>
+    </ul>
+  </div>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+     <div class="col-md-4" style="border: 1px solid #ccc;height: 300px;line-height:300px;font-weight:800;text-align: center;">
+       电子签名
+     </div>
+     <div class="col-md-8" style="border: 1px solid #ccc;height: 300px;line-height:300px;text-align: center;">
+       <if condition="empty($user['sign'])">
+        <div>
+           <img src="{:url('user/yhqm_erweima','id='.$user['id'])}"   style="width:150px;height:150px;"/>请扫码签字
+        </div>
+        <else/>
+        <div class="imgdata" data-url="{:url('user/delesign','id='.$user['id'])}">
+          <img style="width:300px;height:150px;" onmousedown="down();" src="{$user['sign']}" alt="签名"/>
+        </div>
+      </if>
+     </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/layer/layer.js"></script>
+<script>
+  function down(){
+    var k=0;
+    var id='{$user['id']}';
+    var src=$('.imgdata img').attr('src');
+    var url=$('.imgdata').data('url');
+    var index=setInterval(function(){
+      k++;
+      if(k>5){
+        clearInterval(index);
+        $.post(url,{id:id,src:src},function(data){
+          if(data==1){
+            window.location.reload();
+          }
+        },'json');
+
+      }
+    },1000);
+  }
+</script>
+</body>
+</html>

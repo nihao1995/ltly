@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登陆</title>
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+			.layui-icon{font-size: 14px !important;}
+			.layui-form-label{ width: auto;}
+			.layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+			.mr4{ margin-right: 4px;}
+			.layui-form-item{ margin-bottom: 0px;}
+        </style>
+</head>
+<body>
+    <div style="padding: 20px;">
+        <form class="form-horizontal" action="{:cmf_plugin_url('SubAppmarket://Admin_index/doLogin')}" method="post"> 
+            <fieldset>
+                <div class="alert alert-dismissable alert-danger">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>温馨提示</strong><br/>此处登录账号为<a href="https://www.300c.cn" target="_blank">zy官网账号</a>
+				</div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <input type="text" class="form-control" id="inputAccount" value=""
+                                   placeholder="用户名" name="name" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                        <input type="password" class="form-control" name="password" id="inputPassword" value=""
+                               placeholder="你的密码" required>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+	<script src="__PLUGIN_TMPL__/public/assets/layui/layui.all.js"></script>
+	<include file='public/scripts'>
+
+	<script>
+    var callbackdata = function(){
+        var obj = {};
+        obj['name'] = $('input[name=name]').val();
+        obj['password'] = $('input[name=password]').val();
+        return obj;
+    }
+
+	$(function(){
+		;!function(){
+			var layer = layui.layer
+			,form = layui.form;
+			
+		}();
+	})
+	</script>
+</body>
+</html>
+

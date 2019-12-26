@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>卓远网络-工单详情</title>
+    <meta name="keywords" content="{$site_info.site_seo_keywords|default=''}"/>
+    <meta name="description" content="{$site_info.site_seo_description|default=''}">
+    <include file="public@head"/>
+    <link href="__TMPL__/public/assets/css/slippry/slippry.css" rel="stylesheet">
+    <link href="__TMPL__/public/assets/css/btn.css" rel="stylesheet">
+     <link href="__TMPL__/public/assets/gongdan/css/style.css" rel="stylesheet">
+    
+    <!-- Bootstrap -->
+
+    <style>
+        .caption-wraper {
+            position: absolute;
+            left: 50%;
+            bottom: 2em;
+        }
+
+        .caption-wraper .caption {
+            position: relative;
+            left: -50%;
+            background-color: rgba(0, 0, 0, 0.54);
+            padding: 0.4em 1em;
+            color: #fff;
+            -webkit-border-radius: 1.2em;
+            -moz-border-radius: 1.2em;
+            -ms-border-radius: 1.2em;
+            -o-border-radius: 1.2em;
+            border-radius: 1.2em;
+        }
+
+        .tc-gridbox {
+            margin: 0;
+        }
+
+        @media (max-width: 767px) {
+            .caption-wraper {
+                left: 0;
+                bottom: 0.4em;
+            }
+
+            .caption-wraper .caption {
+                left: 0;
+                padding: 0.2em 0.4em;
+                font-size: 0.92em;
+                -webkit-border-radius: 0;
+                -moz-border-radius: 0;
+                -ms-border-radius: 0;
+                -o-border-radius: 0;
+                border-radius: 0;
+            }
+        }
+
+    </style>
+    <hook name="before_head_end"/>
+</head>
+<body class="body-white">
+<include file="public@nav"/>
+
+<div style="padding-top: 100px;"></div>
+
+
+    <div class="container">
+        <div class="gd-bt20"></div>
+        <div class="row">
+          	<div class="col-md-12">
+           	<a href="{:url('portal/index/gongdan')}" style="color: #333">
+					<div class="gd-fh-img">
+						<img src="__TMPL__/public/assets/gongdan/images/fh.png">
+					</div>
+					<span class="gd-fh-line">返回我的工单</span>
+					</a>
+            </div>
+        </div>
+        <div class="gd-bt50"></div>
+        
+            <div class="row"  style="margin-bottom: 10px;">
+            <div class="col-md-12">
+            <div style="float: left;width: 50%;overflow: hidden">
+			<h4 class="gd-wz1" style="color:#333">{$gd['title']}</h4>
+			<div style="margin: 25px 0px 20px;">
+				<span class="gd-tj2">{$gd['type']}</span>
+			</div>
+			<div style="color:#8f8f8f;line-height: 25px;">{$gd['content']}</div>
+			</div>
+			
+			<div style="float: left;width: 50%;overflow: hidden">
+			<?php if($gd['status']==1){?>
+			<form class="js-ajax-form" action="{:url('portal/index/gongdan_guan')}" method="post">
+			<input type="hidden" name="id" value="{$gd['id']}">
+ 			<button type="submit" style="float: right;"  class="button button-primary button-pill button-small js-ajax-submit">关闭工单</button>
+ 			</form>
+ 			<?php }?>
+ 			<?php if($gd['status']==2){?>
+ 			<form class="js-ajax-form" action="{:url('portal/index/gongdan_kai')}" method="post">
+			<input type="hidden" name="id" value="{$gd['id']}">
+ 			<button type="submit" style="float: right;"  class="button button-tiny button-pill button-small js-ajax-submit">重启工单</button>
+ 			</form>
+ 			<?php }?>
+ 			
+ 			
+ 			</div>
+			
+			
+			
+			</div>
+  			</div>
+			
+			<div class="row" style="margin-bottom: 20px;">
+			<div class="col-md-12">
+			
+			<i class="gd-wz5 fl mt10">工单编号：{$gd['num']}</i>
+			<i class="gd-wz5 fr mt10" style="color: #666;font-size: 12px;">{:date('Y-m-d H:i:s',$gd['add_time'])}</i>
+ 			
+ 			
+ 			
+  			</div>
+  			</div>
+  			<div class="row" style="border-bottom:1px dashed #efefef;margin-bottom: 10px;padding-bottom: 10px;">
+			<div class="col-md-12">
+  			<i class="gd-wz5 fl mt10" style="color: #333">回复数（{$geshu}）</i>
+  			</div>
+  			</div>
+  			<div class="gd-bt20"></div>
+  			<?php $i=1; ?>
+  			
+  			<?php foreach($gds as $list){?>
+  			<div class="row">
+  			<div class="col-md-12">
+   			<div class="gd-bk" style="padding: 10px 0">
+   				<div class="w-10" style="width:  12%;line-height:80px;color:#007AAE;">
+   					
+   					<?php if($list['userid']=='zycrm'){?>
+   					<span style="color:#007aae">卓远网络</span>
+   					<?php } ?>
+   					<?php if($list['userid']!='zycrm'){?>
+   					<span style="color: #6BD089;">我</span>
+   					<?php } ?>
+   					
+   					
+   				</div>
+   				<div class="w-80" style="width:  78%;">
+   					<div style="margin-top: 15px;">{$list['content']}</div>
+   					<div style="margin-top: 30px;color: #666;font-size: 12px;" >{:date('Y-m-d H:i:s',$list['add_time'])}</div>
+   				</div>
+   				<div class="w-10">
+   					<?php echo $i; ?>楼
+   				</div>
+   				<div class="clear"></div>
+   			</div>
+   			</div>
+   			</div>
+   			<?php $i++; ?>
+   			<?php } ?>
+   			<?php if($gd['status']==1){ ?>
+   			<form class="js-ajax-form" action="{:url('portal/index/add_hf')}" method="post">
+   			<div class="row" style="margin-top: 20px;">
+   			<div class="col-md-12">
+   			<script type="text/plain" id="content" name="post[content]" rows="10"></script>
+   			<input type="hidden" name="post[gd_id]" value="{$gd['id']}">
+   			</div>
+			</div>
+  		    <div class="row" style="margin-top:80px;">
+   			<div class="col-md-12" style="margin: 0 auto;text-align: center">
+   			<button class="button button-glow button-border button-rounded button-primary js-ajax-submit" type="submit" style="padding: 22px 140px;margin: 0 auto;line-height: 0px;">回复</button>
+   			</div>
+			</div>
+  		    </form>
+  		    <?php }?>
+  		 <include file="public@footer"/>
+   		</div>
+<include file="public@scripts"/>
+
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript">
+    //编辑器路径定义
+    var editorURL = GV.WEB_ROOT;
+</script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        editorcontent = new baidu.editor.ui.Editor({toolbars:[['attachment','simpleupload','insertimage']]});
+        editorcontent.render('content');
+        try {
+            editorcontent.sync();
+        } catch (err) {
+        }
+	})
+</script>
+<script>
+    $(function () {
+        $("#home-slider").slippry({
+            transition: 'fade',
+            useCSS: true,
+            captions: false,
+            speed: 1000,
+            pause: 3000,
+            auto: true,
+            preload: 'visible'
+        });
+        $("#home-slider").show();
+    });
+</script>
+<script src="__TMPL__/public/assets/js/slippry.min.js"></script>
+<hook name="before_body_end"/>
+</body>
+</html>
+
+    

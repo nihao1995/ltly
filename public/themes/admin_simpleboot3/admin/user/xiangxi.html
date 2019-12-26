@@ -1,0 +1,258 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active">员工详细</li>
+		</ul>
+	<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('user/editPost')}">
+    <input type="hidden" name="post[id]" value="{$id}" />
+		 <div class="row">
+		 <div class="col-md-9">
+		  <table class="table table-bordered">
+              <tr>
+                  <th><b>头像</b></th>
+              </tr>
+              <tr>
+                  <td>
+                      <div style="text-align: center;">
+                          <input type="hidden" name="post[avatar]" id="thumbnail" value="{$avatar}">
+                             
+                          <if condition="empty($avatar)">
+                              <img src="__TMPL__/public/assets/images/default-thumbnail.png"
+                                   id="thumbnail-preview"
+                                   width="135" height="130"  style="cursor: pointer;border-radius: 50%"/>
+                              <else/>
+                              <img src="{:cmf_get_image_preview_url($avatar)}"
+                                   id="thumbnail-preview"
+                                   width="130" height="130" style="cursor: pointer;border-radius: 50%"/>
+                          </if>
+
+                          </a>
+
+                      </div>
+                  </td>
+              </tr>
+		            <tr>
+                        <th><b>用户名</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                           {$user_login}
+                        </td>
+                    </tr>
+              <tr>
+                  <th><b>性别</b></th>
+              </tr>
+              <tr>
+                  <td>
+                      <?php if($sex==1){ ?> 女 <?php } ?> <?php if($sex==2){ ?> 男 <?php } ?>
+                  </td>
+              </tr>
+
+                     
+
+                   
+
+                     <tr>
+                        <th><b>{:lang('EMAIL')}</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                           {$user_email}
+                        </td>
+                    </tr>
+              <tr>
+                  <th><b>实习时间</b></th>
+              </tr>
+              <tr>
+                  <td>
+                      <?php if($sx_time){ ?> {:date('Y-m-d ',$sx_time)} <?php } ?> <?php if(!$sx_time){ ?> 无 <?php } ?>
+                  </td>
+              </tr>
+
+              <tr>
+                  <th><b>入职时间</b></th>
+              </tr>
+              <tr>
+                  <td>
+                      <?php if($rz_time){ ?> {:date('Y-m-d ',$rz_time)} <?php } ?> <?php if(!$rz_time){ ?> 无 <?php } ?>
+                  </td>
+              </tr>
+              <tr>
+                  <th><b>生日</b></th>
+              </tr>
+              <tr>
+                  <td>
+                      <?php if($birthday){ ?> {:date('Y-m-d ',$birthday)} <?php } ?> <?php if(!$birthday){ ?> 无 <?php } ?>
+              </tr>
+
+
+                     <tr>
+                        <th><b>附件照片</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul  class="pic-list list-unstyled form-inline">
+                                <notempty name="info.photos">
+                                    <foreach name="info.photos" item="vo">
+                                        <php>$img_url=cmf_get_image_preview_url($vo['url']);</php>
+                                        <img id="photo-{$key}-preview"
+                                                 src="{:cmf_get_image_preview_url($vo['url'])}"
+                                                 style="height:36px;width: 36px;"
+                                                 onclick="parent.imagePreviewDialog(this.src);">
+                                    </foreach>
+                                     
+                                </notempty>   
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>工作经历</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {$bak}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><a onclick="abc({$id})" style="cursor:pointer"><b>职位</b></a></th>
+                    </tr>
+                    <tr id="cfgw" >
+                        <td>
+                            {$gw['name']} <?php if($service!=0){echo "   身兼公司客服";}?>
+                        </td>
+                    </tr>
+                    <tr id="gw" style="display: none">
+                        <td>
+                           
+                            {$gw['remark']} 
+                            
+                        </td>
+                    </tr> 
+
+			 </table>
+			</div>
+				
+ <div class="col-md-3">
+                <table class="table table-bordered">
+                     <tr>
+                    <th><b>二维码</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                          
+                            <img src="{:url('user/erwei','id='.$id)}" style="width:150px;height:150px;"/>
+                        </td>
+                    </tr>
+                      <tr>
+                        <th><b>手机号码</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                         {$mobile}
+                        </td>
+                    </tr>
+                     <tr>
+                        <th><b>紧急联系人</b></th>
+                    </tr>
+
+                    <tr>
+                        <td>
+                          {$jjlianxi}
+                        </td>
+                    </tr>           
+                    <tr>
+                        <th><b>身份证</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                           {$sfz}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>联系地址</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {$address}
+                        </td>
+                    </tr>
+
+                     <tr>
+                        <th><b>籍贯</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {$jiguan}
+                        </td>
+                    </tr>
+                     <tr>
+                        <th><b>毕业学院</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                           {$byxy}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>学历</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {$xueli}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>专业</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {$zhuanye}
+                        </td>
+                    </tr>        
+                    <tr>
+                        <th><b>入职天数</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                           <?php if(((time()-$rz_time)/86400) < 365 ){ echo round((time()-$rz_time)/86400, 0).'天'; }?>
+                     
+                     <?php if(((time()-$rz_time)/86400) > 365 ){ echo round((time()-$rz_time)/31104000,0).'年'.(((time()-$rz_time)/86400)%365).'天'; }?>
+                        </td>
+                    </tr> 
+                </table>
+            </div>
+
+		
+	</div>
+	</form>
+	
+
+	</div>
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+$("#cfgw").click(function(){
+  $("#gw").toggle();
+});
+</script>
+<script type="text/javascript">
+	    function abc(x) {
+        var url="{:url('user/bak')}?id=" +x;
+        openIframeLayer(url, '职位技能要求', {
+            area: ['700px', '600px'],
+            btn: ['确定'],
+            yes: function (index, layero) {
+                //do something
+
+                //console.log(layer.getFrameIndex(index));
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    }
+
+    
+</script>
+</body>
+</html>

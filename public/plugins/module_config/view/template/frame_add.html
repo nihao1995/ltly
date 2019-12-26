@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>模块访问配置</title>
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+            .layui-icon{font-size: 14px !important;}
+            .layui-form-label{ width: auto;}
+            .layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+            .mr4{ margin-right: 4px;}
+            .layui-form-item{ margin-bottom: 0px;}
+            .row{ margin: 0 !important;}
+            .form-horizontal .form-group { margin: 0 0 15px 0}
+        </style>
+</head>
+<body>
+
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+            <div id="content">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="content">
+                            <form id="edit-form" class="form-horizontal nice-validator n-default n-bootstrap">
+                                <div class="form-group"></div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">最新版本:</label>
+                                    <div class="col-xs-8 col-sm-5">
+                                        <input class="form-control" name="versions" type="text" value="{$data.versions}" required="required" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">版本名称:</label>
+                                    <div class="col-xs-4 col-sm-3">
+                                        <select class="form-control" name="type">
+                                          <option value="1">框架小升级</option>
+                                          <option value="2">框架大升级</option>
+                                        </select>                                       
+                                    </div>
+
+                                    <div class="col-xs-8 col-sm-5">
+                                        <input class="form-control" name="name" type="text" value="" required="required">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">说明:</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <textarea class="form-control" name="describe" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                
+
+                                <div class="form-group">
+
+                                    <label class="control-label col-xs-12 col-sm-2">上传文件:</label>
+                                    <div class="col-xs-8 col-sm-5">
+                                        <input class="form-control" name="src" type="text" value="" required="required" readonly>
+                                    </div>                                  
+                                    <div class="col-xs-4 col-sm-3">
+                                        <div class="input-group">
+                                            <input id="image_info" name="image" type="hidden" value="">
+                                                <span style="position: relative;">
+                                                    <button type="button" class="btn btn-danger plupload" style="position: relative; z-index: 1;" id="mindMap"><i class="fa fa-upload"></i> 上传文件</button>
+                                                </span>
+                                                
+                                            <span class="msg-box n-right"></span>
+                                        </div>
+                                        <ul class="row list-inline plupload-preview" id="image_list"></ul>
+                                    </div>
+                                </div>                                
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<include file='public/scripts'>
+<script src="__STATIC__/js/layui/layui.all.js"></script>
+<script src="__STATIC__/js/custom/custom.js"></script>
+<link href="__STATIC__/css/layui.css" rel="stylesheet" type="text/css">
+<script type="text/javascript">
+var method = {};
+$(function(){
+    layui.use('upload', function(){
+        var $ = layui.jquery
+        ,upload = layui.upload;
+
+        //上传思维导图
+        upload.render({ 
+            elem: '#mindMap'
+            // ,url: "/public/plugin/appmarket/publish/mindmap.html?id=0"
+            ,url: "{:cmf_plugin_url('ModuleConfig://TemplateFrame/fileUpload')}"
+            ,accept: 'file' //普通文件
+            ,exts: "zip|rar" //只允许上传压缩文件
+            ,done: function( res ){             
+                showMessage( res, 'src' , '#mindMap' );                
+            }
+        });
+
+        var showMessage = function( data , inputName , id ){
+            var icon  = (data.status == true )? 1: 5;
+            layer.msg( data.message , { icon: icon });
+                console.log(icon);
+            if( icon == 1 ){
+                $('input[name='+inputName+']').val(data.data);
+            }
+        }
+    });
+}); 
+
+</script>
+
+
+<script>
+    /**
+     * 获取窗口中的元素，然后返回给父级
+     * @return {[type]} [description]
+     */
+    function callbackdata(){
+        var arr = '';
+        // $("input[name=ceshi]").each(function(){
+        //     arr = $(this).val()+','+arr;
+        // })
+        // console.log(arr);
+        
+
+        var name = $("input[name=name]").val();
+        var describe = $("textarea[name=describe]").val();
+        var src = $("input[name=src]").val();
+        var type = $("select[name=type]").val();
+
+        if(!name || !describe || !src){
+            layer.msg("参数不能为空");
+            return false;
+        }
+
+        var mycars = new Array();
+        mycars['name'] = name;
+        mycars['describe'] = describe;
+        mycars['src'] = src;
+        mycars['type'] = type;
+        return mycars;
+    }    
+
+</script>
+</body>
+</html>

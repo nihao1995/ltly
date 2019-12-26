@@ -1,0 +1,134 @@
+<include file="public@header" />
+<style>
+  .list-show img{
+      max-width: 100%;
+  }
+   .list-show video{
+    max-width: 100%;
+   }
+</style>
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+      <li><a href="javascript:;" data-url="{:url('api/login/user','id='.$userid)}" onclick="mpyl(this);">名片预览</a></li>
+      <li class="active"><a href="{:url('user/businesscard')}">个人名片</a></li>
+      <li><a href="{:url('user/sign')}">电子签名</a></li>
+    </ul>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 col-sm-offset-2">
+      <h3>设置个人介绍<span style="font-size: 12px;color:green;"> &nbsp;&nbsp; 提示:个人介绍自动保存无需提交</span></h3>
+      <div style="width: 100%;height: 100px;border: 1px solid #ccc;padding: 5px;line-height: 20px;" onclick="$(this).attr('contenteditable',true);"  onblur="setSign(this);">{$signature}
+      </div>
+    </div>
+  </div>
+  <form method="post" class="form-horizontal js-ajax-form" action="{:url('user/businesscard_post')}">
+   <div class="row">
+     <div class="col-sm-offset-2 col-md-8">
+      <h3>添加展示内容</h3>
+      <table class="table table-bordered">
+        <tr>
+          <td>
+            <script type="text/plain" id="content" name="post[bak]" ></script>
+          </td>
+        </tr>
+      </table>
+      <div class="form-group">
+        <div class="col-sm-8">
+         <button type="submit" class="btn btn-primary js-ajax-submit" >提交</button>
+       </div>
+     </div>
+   </div>
+ </div>
+</form>
+
+<div class="row">
+  <div class="col-md-8 col-sm-offset-2">
+    <h3>信息展示</h3>
+    <table class="table table-bordered">
+      <volist name="list" id="vo">
+      <tr>
+        <td>
+          <div class="list-show"  style="margin-top: 10px;border: 2px solid green;padding: 20px;">
+            <div style="float: right;" data-id="{$vo.id}" data-uteid="{$userid}">
+              <php> if($vo['sort']==0){ echo '<a href="javascript:;" onclick="operate(this,1);">置顶</a>' ;}else{echo '<a href="javascript:;" onclick="operate(this,0);">取消置顶</a>' ;}</php> | <a href="javascript:;"  onclick="del(this,-1);">删除</a></div>
+            <div style="clear:both;width: 100%;">
+              {$vo.content}
+            </div>
+          </div>
+        </td>
+      
+      </tr>
+    </volist>
+    </table>
+  </div>
+</div>
+
+</div>
+<div style="padding-bottom: 100px;">
+  
+</div>
+<script type="text/javascript">
+  $(function () {
+    //,toolbars:[['attachment','simpleupload','insertimage','insertvideo']]
+    //initialFrameHeight:500
+    editorcontent = new baidu.editor.ui.Editor();
+    editorcontent.render('content');
+    try {
+      editorcontent.sync();
+    } catch (err) {
+    }
+
+    $('.btn-cancel-thumbnail').click(function () {
+      $('#thumbnail-preview').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+      $('#thumbnail').val('');
+    });
+
+  });
+</script>
+<script src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/layer/layer.js"></script>
+<script>
+  function del(e,type){
+    var index =layer.confirm('确定删除此条信息吗？',{title:"删除提醒",btn:['确认','取消'],icon:2},function (){
+      operate(e,type);
+    },function(){
+      layer.close(index);
+      layer.msg('操作取消！');
+    })
+  }
+  function operate(e,type){
+    var url="operate";
+    var id=$(e).parent().data('id');
+    var userid=$(e).parent().data('uteid');
+    $.post(url,{userid:userid,id:id,type:type},function(data){
+      window.location.href=location.href;
+    },'json');
+  }
+
+
+
+  function mpyl(e){
+    var url=$(e).data('url');
+    var index=layer.open({
+      type: 2,
+      title: '名片预览',
+      shadeClose: true,
+      shade: 0.8,
+      area: ['500px', '80%'],
+      content: url //iframe的url
+    });
+  }
+
+
+  function setSign(e){
+    $(e).attr('contenteditable',false);
+    $.post('setSignature',{content:$(e).html()},function(){},'json');
+  }
+</script>
+</body>
+</html>

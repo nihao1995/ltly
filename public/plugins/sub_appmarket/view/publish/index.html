@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>应用市场</title>
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/backend.min.css" rel="stylesheet" type="text/css">
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+			.layui-icon{font-size: 14px !important;}
+			.layui-form-label{ width: auto;}
+			.layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+			.mr4{ margin-right: 4px;}
+			.layui-form-item{ margin-bottom: 0px;}
+			.row{ margin: 0 !important;}
+        </style>
+</head>
+<body>
+
+	<div class="wrap js-check-wrap" style="padding: 20px 20px 0px 20px;">
+	    <ul class="nav nav-tabs">
+	        <php> $currentTab = 2 ;</php>
+	        <include file="public/nav" />
+	    </ul>
+	</div>
+    <div class="wrap js-check-wrap">
+        <form class="form-inline margin-top-20 well" method="post" action="{:cmf_plugin_url('Appmarket://publish/index')}">
+        	<div class="form-group">
+			    <select class="form-control" name="module">
+			    	<option value="100"  <?php if( $search [ 'module' ] == 100 ) echo 'selected' ;?>  >所有模块</option>
+			    	<volist name = "moduleList" id = "vo" >
+			    		<option value="{$vo.name}" <?php if( $search [ 'module' ] == $vo['name'] ) echo 'selected' ;?> >{$vo.title}</option>
+			    	</volist>
+			    </select>
+			</div>
+        	<div class="form-group">
+			    <select class="form-control" name="author">
+			    	<option value="0"  <?php if( $search [ 'author' ] == 0 ) echo 'selected' ;?>  >所有开发者</option>
+			    	<volist name="userList" id="vo">
+			    		<option value="{$vo.id}"  <?php if( $search [ 'author' ] == $vo['id'] ) echo 'selected' ;?>  >{$vo.user_login}</option>
+			    	</volist>
+			    </select>
+			</div>
+			
+			<div class="form-group">
+			    <label for="status">状态</label>
+			    <select class="form-control" name="status">
+			    	<option value="100" <?php if( $search [ 'status' ] == 100 ) echo 'selected' ;?> >全部</option>
+			    	<option value="99" <?php if( $search [ 'status' ] == 99 ) echo 'selected' ;?> >进行中</option>
+			    	<option value="1" <?php if( $search [ 'status' ] == 1 ) echo 'selected' ;?> >审核中</option>
+			    	<option value="2" <?php if( $search [ 'status' ] == 2 ) echo 'selected' ;?> >未通过</option>
+			    	<option value="4" <?php if( $search [ 'status' ] == 4 ) echo 'selected' ;?> >已通过</option>
+			    </select>
+			</div>
+			<div class="form-group">
+			    <label for="putway">在售</label>
+			    <select class="form-control" name="putway" id="putway">
+			    	<option value="100" <?php if( $search [ 'putway' ] == 100 ) echo 'selected' ;?>  >全部</option>
+			    	<option value="1" <?php if( $search [ 'putway' ] == 1 ) echo 'selected' ;?> >上架</option>
+			    	<option value="0" <?php if( $search [ 'putway' ] == 0 ) echo 'selected' ;?> >下架</option>
+			    </select>
+			</div>
+			<div class="form-group">
+			    <label for="charge">收费</label>
+			    <select class="form-control" name="charge" id="charge">
+			    	<option value="100" <?php if( $search [ 'charge' ] == 100 ) echo 'selected' ;?> >全部</option>
+			    	<option value="1" <?php if( $search [ 'charge' ] == 1 ) echo 'selected' ;?> >付费</option>
+			    	<option value="0" <?php if( $search [ 'charge' ] == 0 ) echo 'selected' ;?> >免费</option>
+			    </select>
+			</div>
+			<button type="submit" name="search" value="search" class="btn btn-success">查询</button>
+		</form>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="theader">
+                	<td width="50">序号</td>
+                    <th width="150">模块菜单名</th>
+                    <th width="150">模块标识</th>
+                    <th width="250">简介</th>
+                    <th width="60">价格</th>
+                    <th width="60">开发者</th>
+                    <th width="60">版本</th>
+                    <th width="80">状态</th>
+                    <th width="80">在售</th>
+                    <th width="200">操作</th>
+                </tr>
+            </thead>
+            
+            <tbody class="table-body">
+            	<volist name ="list" id="vo">
+            		<tr>
+            			<td>{++$key}</td>            			
+            			<td>{$vo.title}</td>
+            			<td>{$vo.name}</td>
+						<td>{$vo.describe}</td>
+						<td>
+							<if condition = "$vo['price'] eq 0">
+									免费
+								<else>
+									￥{$vo.price}
+							</if>
+						</td>
+						<td>{$vo.author}</td>
+						<td>{$vo.version}</td>
+						<td style="color:{$statusColor[$vo['status']]};">
+							<span style="color:orange;">
+								<if condition="$vo['step'] eq 1" >
+										流程1
+									<elseif condition="$vo['step'] eq 2">
+										流程2
+								</if>
+							</span>
+							{$statusStr[$vo['status']]}
+						</td>
+						<td>
+							<if condition="$vo['putway'] eq 0">
+									<span style="color:red;">否</span>
+								<else>
+									<span style="color:green;">是</span>
+							</if>
+						</td>
+						<td>
+							<if condition="cmf_auth_check(cmf_get_current_admin_id(),'plugin/appmarket/publish/putway')">
+								<if condition="$vo['putway'] eq 0">
+										<a class="btn btn-warning btn-sm zy-ajax-confirm" data-msg="确定要将此应用上架吗？" href="{:cmf_plugin_url('Appmarket://publish/putway')}?id={$vo.id}&num=1" >上架</a>
+									<else>
+										<a class="btn btn-danger btn-sm zy-ajax-confirm" data-msg="确定要将此应用下架吗？" href="{:cmf_plugin_url('Appmarket://publish/putway')}?id={$vo.id}&num=0" >下架</a>
+								</if>
+							</if>
+							<if condition="cmf_auth_check(cmf_get_current_admin_id(),'plugin/appmarket/publish/publish')">
+								<a href="{:cmf_plugin_url('Appmarket://publish/publish')}?id={$vo.id}" class="btn btn-xs btn-success" >详情</a>
+							</if>
+							<if condition="cmf_auth_check(cmf_get_current_admin_id(),'plugin/appmarket/publish/publish')">
+								<if condition="$vo['status'] neq 4">
+									<a href="{:cmf_plugin_url('Appmarket://publish/publish')}?id={$vo.id}" class="btn btn-xs btn-info" >编辑</a>
+								</if>
+							</if>
+							<if condition="cmf_auth_check(cmf_get_current_admin_id(),'plugin/appmarket/publish/auditResult')">
+								<a href="{:cmf_plugin_url('Appmarket://publish/auditResult')}?id={$vo.id}" class="btn btn-xs btn-primary" >审核结果</a>
+							</if>
+							<if condition="cmf_auth_check(cmf_get_current_admin_id(),'plugin/appmarket/publish/del')">
+								<a href="javascript:;" class="btn btn-xs btn-danger btn-info" onclick="del( {$vo.id} );">删除</a>
+							</if>
+						</td>
+            		</tr>
+            	</volist>
+            </tbody>
+
+        </table>
+    </div>
+<script src="__PLUGIN_TMPL__/public/assets/layui/layui.all.js"></script>
+<include file='public/scripts'>
+<script>
+	var layer;
+	$(function(){
+		;!function(){
+			layer = layui.layer
+			,form = layui.form;
+			$('#userinfo').on('click',function(){
+				var data = $(this).attr('data');
+				console.log(data);
+				if(data == 0){
+					var title = '登录zy后台';
+					var url="{:cmf_plugin_url('Appmarket://admin_index/login')}";
+					var btn = ['登录','注册'];
+					$(this).attr('data',1);
+				}else{
+					var title = '会员信息';
+					var url="{:cmf_plugin_url('Appmarket://admin_index/islogin')}";
+					var btn = ['退出','取消'];
+					$(this).attr('data',0);
+				}
+				layer.open({
+					type: 2,
+					title: title,
+					shadeClose: true,
+					shade: 0.1,
+				    skin: 'layui-layer-fast', //样式类名
+					area: ['500px', '355px'],
+					btn:btn,
+					id:'info',
+					fixed:false,
+					content: url, //iframe的url
+					yes: function (index, layero) {
+						console.log(data);
+						if(data == 0){
+							layer.msg('跳登录');
+						}else{
+							layer.msg('跳退出');
+						}
+					},
+					btn2:function(index, layero){
+						console.log(data);
+						if(data == 0){
+							layer.msg('跳注册');
+						}
+					}
+				});
+			})
+			$('#pluginedit').on('click',function(){
+				var title = '编辑';
+				var url="{:cmf_plugin_url('Appmarket://admin_index/pluginedit')}";
+				var btn = ['确定','重置'];
+				layer.open({
+					type: 2,
+					title: title,
+					shadeClose: true,
+					shade: 0.1,
+				    skin: 'layui-layer-fast', //样式类名
+					area: ['800px', '90%'],
+					btn:btn,
+					id:'info',
+					fixed:false,
+					content: url, //iframe的url
+					yes: function (index, layero) {
+						layer.msg('保存');
+					},
+					btn2:function(index, layero){
+						layer.msg('重置');
+						$('form')[0].reset();
+						return false;
+					}
+				});
+			})
+
+
+
+			$('.pluginadd').on('click',function(){
+				var title = '发布模块';
+				var url="{:cmf_plugin_url('Appmarket://publish/add')}";
+				var btn = ['确定','取消'];
+				layer.open({
+					type: 2,
+					title: title,
+					shadeClose: true,
+					shade: 0.1,
+				    skin: 'layui-layer-fast', //样式类名
+					area: ['1000px', '90%'],
+					btn:btn,
+					id:'info',
+					fixed:false,
+					content: url, //iframe的url
+					yes: function (index, layero) {
+						var res = window["layui-layer-iframe" + index].formData();
+						if( res.isOk == false  ){
+							layer.msg('请完善资料以后再提交。');
+							return false;
+						}
+						$.post("{:cmf_plugin_url('Appmarket://publish/addPost')}",res,function(data){
+							console.log('服务器返回数据：');
+							console.log(data);
+							layer.msg(data.message);
+						},'json');
+					},
+					btn2:function(index, layero){
+						layer.msg('取消');						
+					}
+				});
+			})
+
+
+			$('.btn-upgrade').on('click',function(){
+				var title = '信息';
+				var url="{:cmf_plugin_url('Appmarket://admin_index/pluginup')}";
+				var btn = ['确定','取消'];
+				layer.open({
+					type: 2,
+					title: title,
+					shadeClose: true,
+					shade: 0.1,
+				    skin: 'layui-layer-fast', //样式类名
+					area: ['400px', 'auto'],
+					btn:btn,
+					id:'info',
+					fixed:false,
+					content: url, //iframe的url
+					yes: function (index, layero) {
+						layer.msg('升级成功');
+					},
+					btn2:function(index, layero){
+					}
+				});
+			})
+
+
+			$('.moreinfo').on('click',function(){
+				var title = '插件详情';
+				var url="{:cmf_plugin_url('Appmarket://admin_index/plugininfo')}";
+				var btn = ['关闭'];
+				layer.open({
+					type: 2,
+					title: title,
+					shadeClose: true,
+					shade: 0.1,
+				    skin: 'layui-layer-fast', //样式类名
+					area: ['1000px', '90%'],
+					btn:btn,
+					id:'info',
+					fixed:false,
+					content: url, //iframe的url
+					yes: function (index, layero) {
+						layer.close(index)
+					},
+					
+				});
+			})
+
+		}();
+	})
+	</script>
+	<script type="text/javascript">
+		//删除
+		var del = function( id ){
+			var index = layer.confirm( '确定要删除此信息吗？' , 
+				{ btnL:['确定','取消'] } ,
+				function(){
+					//提交数据
+					var url = "{:cmf_plugin_url('Appmarket://publish/del')}";
+					$.post( url , { id:id } ,function(data){
+						var icon = ( data.code == 200 ) ? 1: 5;
+						layer.msg( data.message , { icon: icon } );
+						if( icon == 1 ){
+							setTimeout(function(){
+								window.location.reload();
+							},1200);
+						}
+					} , 'json' );
+				},
+				function(){
+					layer.msg('操作取消');
+					layer.close( index );
+				}
+			);
+		}
+	</script>
+<script src="__STATIC__/js/custom/custom.js"></script>
+</body>
+</html>

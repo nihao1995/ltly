@@ -1,0 +1,61 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('department/index')}">部门管理</a></li>
+			<li class="active"><a href="{:url('department/add')}">部门添加</a></li>
+		</ul>
+		<form class="form-horizontal js-ajax-form margin-top-20" action="{:url('department/addpost')}" method="post">
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>部门名称</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="name">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>上级部门</label>
+				<div class="col-md-6 col-sm-10">
+					<!-- <input type="text" class="form-control" id="input-name" name="parent_id"> -->
+					<select name="parent_id">
+						
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-remark" class="col-sm-2 control-label"><span class="form-required">*</span>部门编号</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" name="department_NO" class="form-control" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-remark" class="col-sm-2 control-label">部门备注</label>
+				<div class="col-md-6 col-sm-10">
+					<textarea type="text" class="form-control" id="input-remark" name="remark"></textarea>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-2 control-label">{:lang('STATUS')}</label>
+				<div class="col-md-6 col-sm-10">
+					<label class="radio-inline">
+						<input type="radio" name="status" value="1"> {:lang('ENABLED')}
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="status" value="0"> {:lang('DISABLED')}
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+	<script>
+
+	</script>
+</body>
+</html>

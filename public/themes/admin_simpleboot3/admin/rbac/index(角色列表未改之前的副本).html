@@ -1,0 +1,567 @@
+<include file="public@header" />
+<style>.expander{margin-left: -20px;}</style>
+<style type="text/css">
+	.icon{
+		padding: 5px;
+		cursor: pointer;
+		display: none;
+	}
+	tbody tr:hover .icon{
+		display: inline-block;
+	}
+	.role{
+		cursor: pointer;
+	}
+</style>
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="javascript:;">角色树状图</a></li>
+		</ul>
+			<div class="table_full">
+				<table class="table table-bordered" id="department-tree">
+					<tbody>
+						{$role}
+					</tbody>
+				</table>
+			</div>
+	</div>
+	<!-- 角色模态框 -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content" style="width: 700px;">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						标题
+					</h4>
+				</div>
+				<div id="role-modal" class="modal-body">
+					<form id="ajax-form" class="form-horizontal js-ajax-form margin-top-20" method="post" onkeydown="if(event.keyCode==13)return false;">
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>角色名称</label>
+									<div class="col-md-6 col-sm-10">
+										<input type="text" class="form-control" id="input-name" name="name">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>上级名称</label>
+									<div class="col-md-6 col-sm-10">
+										<select name="parent_id">
+											{$role2}
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>部门名称</label>
+									<div class="col-md-6 col-sm-10">
+										<select name="department_id">
+											{$department}
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="content" class="col-sm-2 control-label">岗位备注</label>
+									<div class="col-md-10 col-sm-10">
+									
+									
+										<!--<textarea type="text" class="form-control" id="input-remark" name="remark"></textarea>-->
+										
+										<script type="text/plain" id="content"  name="remark"></script>
+										
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">{:lang('STATUS')}</label>
+									<div class="col-md-6 col-sm-10">
+										<label class="radio-inline">
+											<input type="radio" name="status" checked="checked" value="1"> {:lang('ENABLED')}
+										</label>
+										<label class="radio-inline">
+											<input type="radio" name="status" value="0"> {:lang('DISABLED')}
+										</label>
+									</div>
+								</div>
+							</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+					<button id="ajax-post-add" type="button" class="btn btn-primary">
+						添加角色
+					</button>
+					<button id="ajax-post-edit" type="button" class="btn btn-primary">
+						提交更改
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+
+	<!-- 用户模态框 -->
+	<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content" >
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						添加员工
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form id="ajax-user-form" class="form-horizontal js-ajax-form margin-top-20" action="{:url('Rbac/addUser')}" method="post" onkeydown="if(event.keyCode==13)return false;">
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>姓名</label>
+									<div class="col-md-6 col-sm-10">
+										<input type="text" class="form-control" id="input-name" name="user_login">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>邮箱</label>
+									<div class="col-md-6 col-sm-10">
+										<input type="text" class="form-control" id="input-email" name="user_email">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>密码</label>
+									<div class="col-md-6 col-sm-10">
+										<input type="password" class="form-control" id="input-pass" name="user_pass">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>确认密码</label>
+									<div class="col-md-6 col-sm-10">
+										<input type="password" class="form-control" id="input-pass" name="d_pass">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>角色类型</label>
+									<div class="col-md-6 col-sm-10">
+										<select name="role_id">
+											{$role2}
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">{:lang('STATUS')}</label>
+									<div class="col-md-6 col-sm-10">
+										<label class="radio-inline">
+											<input type="radio" name="user_type" checked="checked" value="1"> {:lang('ENABLED')}
+										</label>
+										<label class="radio-inline">
+											<input type="radio" name="user_type" value="0"> {:lang('DISABLED')}
+										</label>
+									</div>
+								</div>
+							</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+					<button id="ajax-userAdd" type="button" class="btn btn-primary">
+						添加员工
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+
+	<!-- 权限模态框 -->
+	<div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<form class="js-ajax-form margin-top-20"  action="{:url('rbac/authorizePost')}" method="post">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							权限管理
+						</h4>
+					</div>
+					<div class="modal-body">
+						
+							<div class="table_full">
+								<table class="table table-bordered" id="authrule-tree">
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						
+					</div>
+					<div class="modal-footer">
+						<input type="hidden" name="roleId" id="roleId" value="" />
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+						</button>
+						<button class="btn btn-primary js-ajax-submit" type="submit">{:lang('SAVE')}</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</form>
+	</div>
+
+	<!-- 用户显示模态框 -->
+	<div class="modal fade" id="userShowModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<form class="js-ajax-form margin-top-20"  action="{:url('rbac/authorizePost')}" method="post">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							查看用户
+						</h4>
+					</div>
+					<div class="modal-body">
+						
+							<div class="table_full">
+								<table class="table table-bordered" id="authrule-tree">
+									<tbody>
+										<th>用户ID</th>
+										<th>姓名</th>
+										<th>邮箱</th>
+									</tbody>
+								</table>
+							</div>
+						
+					</div>
+					<div class="modal-footer">
+						<input type="hidden" name="roleId" id="roleId" value="" />
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</form>
+	</div>
+	
+	<script type="text/javascript">
+    //编辑器路径定义
+    var editorURL = GV.WEB_ROOT;
+</script>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        editorcontent = new baidu.editor.ui.Editor();
+        editorcontent.render('content');
+        try {
+            editorcontent.sync();
+        } catch (err) {
+        }
+
+        $('.btn-cancel-thumbnail').click(function () {
+            $('#thumbnail-preview').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+            $('#thumbnail').val('');
+        });
+
+    });
+	
+</script>	
+	<script type="text/javascript">
+		$(document).ready(function () {
+		Wind.css('treeTable');
+	    Wind.use('treeTable', function () {
+	        $("#department-tree").treeTable({
+	            indent: 20,
+	            initialState: "expanded"
+	        });
+	    });
+	    //ajax提交
+	    $('#ajax-post-add').on('click',function() {
+	    	var form = document.getElementById('ajax-form');
+	    	var formData = new FormData(form);
+	    	$.ajax({
+	    		type : 'POST',
+	    		url : "{:url('Rbac/ajaxAdd')}", 
+	    		data: formData,
+	    		processData: false,  
+	    		contentType: false,  
+	    		success : function(data, textStatus, xhr) {
+	    			$("#myModal").modal('hide');
+	    			if (data.code == '1') {
+	    				new Noty({
+	    				    text: data.msg,
+	    				    type: 'success',
+	    				    layout: 'topCenter',
+	    				    modal: true,
+	    				    animation: {
+	    				        open: 'animated bounceInDown', // Animate.css class names
+	    				        close: 'animated bounceOutUp', // Animate.css class names
+	    				    },
+	    				    timeout: 1,
+	    				    callbacks: {
+	    				        afterClose: function () {
+	    				            reloadPage(window);
+	    				        }
+	    				    }
+	    				}).show();
+	    			}else if (data.code == '0') {
+                                art.dialog({
+                                    content: data.msg,
+                                    icon: 'warning',
+                                    ok: function () {
+                                        this.title(data.msg);
+                                        return true;
+                                    }
+                                });
+                            }
+	    		}
+	    	});
+	    });
+
+	    //获取父级ID
+	    $(".ajax-add").click(function() {
+	    	var id = $(this).attr('id');
+	    	var department_id = $(this).attr('department_id');
+	    	$("form input[type = 'hidden']").remove();
+	    	$("#role-modal select[name='parent_id']").val(id);
+	    	$("#role-modal select[name='department_id']").val(department_id);
+	    	$("#role-modal textarea").val("");
+	    	//$("#role-modal input[type = 'radio']").removeProp('checked');
+	    	$("#role-modal input[name = 'name']").val("");
+	    	$('#ajax-post-edit').hide();
+	    	$('#ajax-post-add').show();
+	    	$("#myModalLabel").text('添加下级角色');
+	    });
+
+	    //ajax获取编辑内容
+	    $(".ajax-edit").click(function() {
+	    	$('#ajax-post-edit').show();
+	    	$('#ajax-post-add').hide();
+	    	$("#myModalLabel").text('修改角色信息');
+	    	var id = $(this).attr('id');
+	    	var inputId = "<input type='hidden' id = 'hiddenInput' name = 'id' value="+id+">";
+	    	$("#role-modal form").append($(inputId));
+	    	var url = $(this).attr('url');
+	    	$.get(url,function (data,status) {
+	    		$("#role-modal input[name = 'name']").val(data.name);
+	    	
+			   var str = data.remark;
+			   var pattern ="<p>";
+			   var str = str.replace(new RegExp(pattern), "");
+				console.log(str);
+			   var ue = UE.getEditor('content');
+				
+				 ue.ready(function() {
+
+                      ue.setContent(str);
+
+            });
+	    		$("#role-modal select[name='parent_id']").val(data.parent_id);
+	    		$("#role-modal select[name='department_id']").val(data.department_id);
+	    		$("#role-modal input[type = 'radio']").removeProp('checked');
+	    		$("#role-modal input[value = "+ data.status +"]").prop('checked','checked');
+	    	},'json');
+	    });
+
+	    //ajax提交编辑内容
+	    $("#ajax-post-edit").on('click',function() {
+	    	var form = document.getElementById('ajax-form');
+	    	var formData = new FormData(form);
+	    	$.ajax({
+	    		type : 'POST',
+	    		url : "{:url('Rbac/ajaxEditPost')}", 
+	    		data: formData,
+	    		processData: false,  
+	    		contentType: false,//不可指定编码
+	    		//contentType: "application/x-www-form-urlencoded; charset=utf-8",   
+	    		success : function(data, textStatus, xhr) {
+	    			$("#myModal").modal('hide');
+	    			if (data.code == '1') {
+	    				new Noty({
+	    				    text: data.msg,
+	    				    type: 'success',
+	    				    layout: 'topCenter',
+	    				    modal: true,
+	    				    animation: {
+	    				        open: 'animated bounceInDown', // Animate.css class names
+	    				        close: 'animated bounceOutUp', // Animate.css class names
+	    				    },
+	    				    timeout: 1,
+	    				    callbacks: {
+	    				        afterClose: function () {
+	    				            reloadPage(window);
+	    				        }
+	    				    }
+	    				}).show();
+	    			}else if (data.code == '0') {
+                                art.dialog({
+                                    content: data.msg,
+                                    icon: 'warning',
+                                    ok: function () {
+                                        this.title(data.msg);
+                                        return true;
+                                    }
+                                });
+                            }
+	    		}
+	    	});
+	    });
+	});
+
+	//用户模块
+	$('.ajax-user').click(function(event) {
+		event.preventDefault();
+		$('#userModal').modal();
+		var role_id = $(this).attr('id'); 
+		$('#userModal select').val(role_id);
+	});
+	//用户提交模块
+	$('#ajax-userAdd').click(function() {
+			var form = document.getElementById('ajax-user-form');
+	    	var formData = new FormData(form);
+	    	$.ajax({
+	    		type : 'POST',
+	    		url : "{:url('Rbac/ajaxAddUser')}", 
+	    		data: formData,
+	    		processData: false,  
+	    		contentType: false,  
+	    		success : function(data, textStatus, xhr) {
+	    			$("#userModal").modal('hide');
+	    			if (data.code == '1') {
+	    				new Noty({
+	    				    text: data.msg,
+	    				    type: 'success',
+	    				    layout: 'topCenter',
+	    				    modal: true,
+	    				    animation: {
+	    				        open: 'animated bounceInDown', // Animate.css class names
+	    				        close: 'animated bounceOutUp', // Animate.css class names
+	    				    },
+	    				    timeout: 1,
+	    				    callbacks: {
+	    				        afterClose: function () {
+	    				            reloadPage(window);
+	    				        }
+	    				    }
+	    				}).show();
+	    			}else if (data.code == '0') {
+                                art.dialog({
+                                    content: data.msg,
+                                    icon: 'warning',
+                                    ok: function () {
+                                        this.title(data.msg);
+                                        return true;
+                                    }
+                                });
+                            }
+	    		}
+	    	});
+	});
+
+	//ajax权限
+	$('.ajax-auth').click(function(event) {
+		event.preventDefault();
+		var url = $(this).attr('href');
+		var id = $(this).attr('id');
+		$('#roleId').val(id);
+		$.get(url,function (data,status) {
+			$('#authModal').modal();
+			$('#authModal tbody').empty().append(data);
+			$("#authrule-tree").treeTable({
+            	indent: 20
+        	});
+		});
+	});
+	</script>
+	<script src="__STATIC__/js/admin.js"></script>
+	<script type="text/javascript">
+
+    function checknode(obj) {
+        var chk = $("input[type='checkbox']");
+        var count = chk.length;
+
+        var num = chk.index(obj);
+        var level_top = level_bottom = chk.eq(num).attr('level');
+        for (var i = num; i >= 0; i--) {
+            var le = chk.eq(i).attr('level');
+            if (le <level_top) {
+                chk.eq(i).prop("checked", true);
+                var level_top = level_top - 1;
+            }
+        }
+        for (var j = num + 1; j < count; j++) {
+            var le = chk.eq(j).attr('level');
+            if (chk.eq(num).prop("checked")) {
+
+                if (le > level_bottom){
+                    chk.eq(j).prop("checked", true);
+                }
+                else if (le == level_bottom){
+                    break;
+                }
+            } else {
+                if (le >level_bottom){
+                    chk.eq(j).prop("checked", false);
+                }else if(le == level_bottom){
+                    break;
+                }
+            }
+        }
+    }
+
+    jQuery(document).ready(function($) {
+    	$('#node-1').find('a').hide();
+    	$('#node-1').find('a.ajax-add').show();
+    	$('#node-1').find('a.ajax-user').show();
+    	$('#userShowModal').on('hide.bs.modal',function () {
+    		$(this).find('tbody td').parent().remove();
+    	})
+    	$('.role').each(function(index, el) {
+    		$(this).click(function() {
+    			roleid = $(this).attr('roleid');
+    			url = '{:url('Rbac/ajaxGetUser',array('roleid' => 'dataid'))}';
+    			url = url.replace('dataid',roleid);
+    			$.get(url, function(data) {
+    				if (data.code !== 0) {
+    					for (var i = 0; i < data.length; i++) {
+    						console.log(data);
+    						str = "<tr><td>"+data[i][0].id+"</td><td>"+data[i][0].user_login+"</td><td>"+data[i][0].user_email+"</td></tr>";
+    						$('#userShowModal tbody').append($(str));
+    					}
+    					$('#userShowModal').modal();
+    				}else{
+    					art.dialog({
+    					    content: data.msg,
+    					    icon: 'warning',
+    					    ok: function () {
+    					        this.title(data.msg);
+    					        return true;
+    					    }
+    					});
+    				}
+
+    			},'json');
+    		});
+    	});
+    });
+
+    jQuery(document).ready(function($) {
+    	var badge = $('#department-tree .badge');
+    	
+    	badge.each(function(index, el) {
+    		var id = $(this).parent().find('.ajax-edit').attr('id');
+    		var url = "{:url('Rbac/getUser')}";
+    		url = url.replace('.html','/id/') + id;
+    		var elthis = $(this);
+    		$.get(url,function(data) {
+    			if (data != 0) {
+    				elthis.html(data);
+    			}
+    		});
+    	});
+    	
+    });
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<include file="public@header" />
+</head>
+<body>
+<script type="text/html" id="photos-item-tpl">
+    <li id="saved-image{id}">
+        <input id="photo-{id}" type="hidden" name="photo_urls[]" value="{filepath}">
+        <input class="form-control" id="photo-{id}-name" type="text" name="photo_names[]" value="{name}"
+               style="width: 200px;" title="图片名称">
+        <img id="photo-{id}-preview" src="{url}" style="height:36px;width: 36px;"
+             onclick="imagePreviewDialog(this.src);">
+        <a href="javascript:uploadOneImage('图片上传','#photo-{id}');">替换</a>
+        <a href="javascript:(function(){$('#saved-image{id}').remove();})();">移除</a>
+    </li>
+</script>
+
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+		
+			<li class="active"><a href="{:url('user/userinfo')}">个人信息编辑</a></li>
+     <!--  <li><a href="{:url('user/businesscard')}">个人名片</a></li> -->
+		</ul>
+	<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('user/editPost1')}">
+    <input type="hidden" name="post[id]" value="{$id}" />
+     
+    
+		 <div class="row">
+		 <div class="col-md-9">
+		  <table class="table table-bordered">
+			        <tr>
+                        <th style="width: 170px"><span class="form-required">*</span>{:lang('USERNAME')}</th>
+                        <td>
+                           <input type="text" class="form-control" id="input-user_login" name="post[user_login]" value="{$user_login}" required="required">
+                        </td>
+                    </tr>
+                      <tr>
+                        <th style="width: 170px">身份证</th>
+                        <td>
+                           <input type="text" class="form-control"  name="post[sfz]" value="{$sfz}" >
+                        </td>
+                    </tr>
+                     <tr>
+                        <th style="width: 170px">手机号码</th>
+                        <td>
+                           <input type="text" class="form-control"  name="post[mobile]" value="{$mobile}">
+                        </td>
+                    </tr>
+                    <tr>
+                  <th style="width: 170px">紧急联系人</th>
+                  <td>
+                      <input type="text" class="form-control"  name="post[jjlianxi]" value="{$jjlianxi}">
+                  </td>
+                  </tr>
+                       <tr>
+                        <th style="width: 170px">联系地址</th>
+                        <td>
+                           <input type="text" class="form-control"  name="post[address]" value="{$address}">
+                        </td>
+                    </tr>
+                     <tr>
+                        <th style="width: 170px">{:lang('PASSWORD')}</th>
+                        <td>
+                          <input type="password" class="form-control" id="input-user_pass" name="user[user_pass]" placeholder="******" value="">
+                        </td>
+                    </tr>
+                     <tr>
+                        <th style="width: 170px">重复密码</th>
+                        <td>
+                         <input type="password" class="form-control" id="input-user_pass" name="post[d_pass]" value="">
+                        </td>
+                    </tr>
+                     <tr>
+                        <th style="width: 170px">{:lang('EMAIL')}</th>
+                        <td>
+                        <input type="text" class="form-control" id="input-user_email" name="post[user_email]" value="{$user_email}">
+                        </td>
+                    </tr>
+			               <tr>
+                        <th style="width: 170px">QQ</th>
+                        <td>
+                        <input type="text" class="form-control" id="input-user_qq" name="post[qq]" value="{$qq}">
+                        </td>
+                    </tr>
+                     <tr>
+                        <th style="width: 170px">性别</th>
+                        <td>
+                    男<input type="radio" value="2" name="post[sex]"  <?php if($sex == 2){ ?> checked <?php } ?> >
+					女<input type="radio" value="1" name="sex" <?php if($sex == 1){ ?> checked <?php } ?>>
+                      
+                        </td>
+                    </tr>
+                      <tr>
+                        <th style="width: 170px">附件照片上传</th>
+                        <td>
+                               <ul id="photos" class="pic-list list-unstyled form-inline">
+                                <notempty name="info.photos">
+                                    <foreach name="info.photos" item="vo">
+                                        <php>$img_url=cmf_get_image_preview_url($vo['url']);</php>
+                                        <li id="saved-image{$key}">
+                                            <input id="photo-{$key}" type="hidden" name="photo_urls[]"
+                                                   value="{$vo.url}">
+                                            <input class="form-control" id="photo-{$key}-name" type="text"
+                                                   name="photo_names[]"
+                                                   value="{$vo.name|default=''}" style="width: 200px;" title="图片名称">
+                                            <img id="photo-{$key}-preview"
+                                                 src="{:cmf_get_image_preview_url($vo['url'])}"
+                                                 style="height:36px;width: 36px;"
+                                                 onclick="parent.imagePreviewDialog(this.src);">
+                                            <a href="javascript:uploadOneImage('图片上传','#photo-{$key}');">替换</a>
+                                            <a href="javascript:(function(){$('#saved-image{$key}').remove();})();">移除</a>
+                                        </li>
+                                       
+                                    </foreach>
+                                     
+                                </notempty>   
+                            </ul>
+   
+                               <a href="javascript:uploadMultiImage('图片上传','#photos','photos-item-tpl');"
+                               class="btn btn-sm btn-default">选择图片</a>
+                               
+                        </td>
+                    </tr>
+              <tr>
+                  <th>工作经历</th>
+                  <td>
+                      <script type="text/plain" id="content" name="post[bak]" >{$bak}</script>
+                  </td>
+              </tr>
+			 </table>
+
+			   <div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label">{:lang('ROLE')}</label>
+				<div class="col-md-6 col-sm-10">
+				<if condition="($qx.role_id eq 1)">
+					<select name="post[role_id]">
+						{$rolelist}
+					</select>
+				    <else/>
+				    <select name="post[role_id]">
+	
+				     <option value="{$info1['role_id']}">
+                
+                     --{$name["name"]}--
+                
+                    </option>
+					</select>
+				    
+				    
+					</if>
+				</div>
+			</div>
+			 <div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">提交</button>
+				</div>
+			</div>
+			
+			</div>
+				
+ <div class="col-md-3">
+                <table class="table table-bordered">
+                    <tr>
+                        <th><b>头像上传</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="text-align: center;">
+                                <input type="hidden" name="post[avatar]" id="thumbnail" value="{$avatar}">
+                                <a href="javascript:uploadOneImage('图片上传','#thumbnail');">
+                                      
+                                          <if condition="empty($avatar)">
+                                        <img src="__TMPL__/public/assets/images/default-thumbnail.png"
+                                             id="thumbnail-preview"
+                                             width="135" height="130"  style="cursor: pointer;border-radius: 50%"/>
+                                        <else/>
+                                        <img src="{:cmf_get_image_preview_url($avatar)}"
+                                             id="thumbnail-preview"
+                                             width="130" height="130" style="cursor: pointer;border-radius: 50%"/>
+                                    </if>
+                                         
+                                </a>
+                                <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+                            </div>
+                        </td>
+                    </tr>
+                     <tr>
+                        <th><b>籍贯</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input class="form-control " type="text" name="post[jiguan]"
+                                   value="{$jiguan}">
+                        </td>
+                    </tr>
+                     <tr>
+                        <th><b>毕业学院</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input class="form-control " type="text" name="post[byxy]"
+                                   value="{$byxy}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>学历</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input class="form-control " type="text" name="post[xueli]"
+                                   value="{$xueli}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>专业</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input class="form-control " type="text" name="post[zhuanye]"
+                                   value="{$zhuanye}">
+                        </td>
+                    </tr>        
+                    <tr>
+                    <th><b>生日</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input class="form-control js-bootstrap-datetime" type="text" name="post[birthday]"
+                                   value="<?php if($birthday){ ?> {:date('Y-m-d ',$birthday)} <?php } ?> <?php if(!$birthday){ ?> 无 <?php } ?> ">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+		
+	</div>
+	</form>
+	
+	</div>
+<script type="text/javascript">
+    $(function () {
+
+        editorcontent = new baidu.editor.ui.Editor();
+        editorcontent.render('content');
+        try {
+            editorcontent.sync();
+        } catch (err) {
+        }
+
+        $('.btn-cancel-thumbnail').click(function () {
+            $('#thumbnail-preview').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+            $('#thumbnail').val('');
+        });
+
+    });
+</script>
+<script src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.all.min.js"></script>
+</body>
+</html>

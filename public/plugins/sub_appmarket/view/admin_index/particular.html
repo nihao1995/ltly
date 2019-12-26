@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>模块详情</title>
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/backend.min.css" rel="stylesheet" type="text/css">
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+			.layui-icon{font-size: 14px !important;}
+			.layui-form-label{ width: auto;}
+			.layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+			.mr4{ margin-right: 4px;}
+			.layui-form-item{ margin-bottom: 0px;}
+			.row{ margin: 0 !important;}
+			.form-horizontal .form-group { margin: 0 0 15px 0}
+        </style>
+</head>
+<body>
+	<div class="wrap js-check-wrap" style="padding: 20px 20px 0px 20px;">
+	</div>
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+			<div id="content">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="content">
+							<form id="edit-form" class="form-horizontal nice-validator n-default n-bootstrap" style="padding-bottom: 150px;">
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块名:</label>
+									<div class="col-xs-12 col-sm-8">
+										<p class="form-control-static">{$module.name|default="未知"}</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">作者:</label>
+									<div class="col-xs-12 col-sm-8">
+										<p class="form-control-static">{$module.author|default="未知"}</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="c-keywords" class="control-label col-xs-12 col-sm-2">版本号:</label>
+									<div class="col-xs-12 col-sm-8">
+										<p class="form-control-static">{$module.version|default="未知"}</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">价格:</label>
+									<div class="col-xs-12 col-sm-8">
+										<p class="form-control-static">
+											<php>
+												echo ( $module['price'] == 0 ) ? '免费':'￥'.number_format( $module['price'] , 2 );
+											</php>
+										</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">状态:</label>
+									<div class="col-xs-12 col-sm-8">
+										<p class="form-control-static"><?php echo  ($module['status'] == 4 )? '正常' : '开发中'; ?></p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块简介:</label>
+									<div class="col-xs-12 col-sm-8">
+										<input class="form-control"   name="describe" type="text" readonly  value="{$module.describe|default=''}" placeholder="请填写模块简介信息" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块功能介绍:</label>
+									<div class="col-xs-12 col-sm-8">
+										<textarea class="form-control"  rows='3' name="introduce" readonly placeholder="请填写模块简介信息" required>{$module.introduce|default=''}</textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">温馨提醒:</label>
+									<div class="col-xs-12 col-sm-8">
+										<textarea class="form-control"  rows='3' name="warning" readonly  placeholder="请填写模块简介信息" required>{$module.warning|default=''}</textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-2">模块预览图:</label>
+									<div class="col-xs-12 col-sm-8">
+										<ul class="row list-inline plupload-preview" id="images_list">
+											<volist name="previewList" id="vo">
+												<li class="col-xs-3"><a href="<?php echo $previewList[$key] ; ?>" data-url="#" target="_blank" class="thumbnail"><img src="<?php echo $previewList[$key] ; ?>" alt="00" class="img-responsive"></a></li>
+											</volist>
+										</ul>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <include file='public/scripts'>
+	<script src="__PLUGIN_TMPL__/public/assets/layui/layui.all.js"></script>
+	<script src="__STATIC__/js/custom/custom.js"></script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
+

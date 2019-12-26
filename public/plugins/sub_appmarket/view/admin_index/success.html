@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>应用市场</title>
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/backend.min.css" rel="stylesheet" type="text/css">
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+			.layui-icon{font-size: 14px !important;}
+			.layui-form-label{ width: auto;}
+			.layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+			.mr4{ margin-right: 4px;}
+			.layui-form-item{ margin-bottom: 0px;}
+			.row{ margin: 0 !important;}
+        </style>
+</head>
+<body>
+	<div class="wrap js-check-wrap" style="padding: 20px 20px 0px 20px;">
+	</div>
+    <div class="wrap js-check-wrap">
+    	<div style="text-align: center;">
+    		<span style="font-size: 100px;color: green;margin-top: 30px;" class="glyphicon glyphicon-ok"></span>
+    	</div>
+    	<div >
+    		<h3 style="text-align: center;margin-top: 30px;">{$success|default="购买成功！"}</h3>
+    	</div>
+    </div>
+<script src="__PLUGIN_TMPL__/public/assets/layui/layui.all.js"></script>
+<include file='public/scripts'>
+</body>
+</html>

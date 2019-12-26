@@ -1,0 +1,126 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="{:url('user/index')}">{:lang('ADMIN_USER_INDEX')}</a></li>
+			<li><a href="{:url('user/add')}">员工添加</a></li>
+		</ul>
+        <form class="well form-inline margin-top-20" method="post" action="{:url('User/index')}">
+            用户名:
+           
+            <input type="text" class="form-control" name="user_login" style="width: 120px;" value="{:input('request.user_login/s','')}" placeholder="请输入{:lang('USERNAME')}">
+            邮箱:
+            <input type="text" class="form-control" name="user_email" style="width: 120px;" value="{:input('request.user_email/s','')}" placeholder="请输入{:lang('EMAIL')}">
+            所属部门：
+            <select id="department_select" name="department_id">
+            	{$department}
+            </select>
+            <input type="submit" class="btn btn-primary" value="搜索" />
+            <a class="btn btn-danger" href="{:url('User/index')}">清空</a>
+        </form>
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="50">ID</th>
+					<th>{:lang('USERNAME')}</th>
+                    <th title="编号说明：员工编号由两位部门编号+三位职位编号+三位员工id组成">员工编号&nbsp;<a href="{:url('user/update_employee_id')}">更新</a></th>
+					<th>所在部门</th>
+					<th>担任岗位</th>
+					<th>{:lang('LAST_LOGIN_IP')}</th>
+					<th>{:lang('LAST_LOGIN_TIME')}</th>
+					<th>{:lang('EMAIL')}</th>
+					<th>请假</th>
+					<th>{:lang('STATUS')}</th>
+                    <th width="50" style="text-align: center;">token</th>
+					<th width="220">{:lang('ACTIONS')}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<php>$user_statuses=array("0"=>lang('USER_STATUS_BLOCKED'),"1"=>lang('USER_STATUS_ACTIVATED'),"2"=>lang('USER_STATUS_UNVERIFIED'));</php>
+				<?php $i = 0 ;?>
+				<foreach name="users" item="vo">
+				<tr>
+					<td>{$vo.id}</td>
+					<td><a href="{:url('user/xiangxi','id='.$vo.id)}">{$vo.user_login}</a></td>
+                    <td>{$vo.employee_id}</td>
+					<td>{$vo.name}</td>
+					<td>{$vo.rolename}</td>
+					<td>{$vo.last_login_ip}</td>
+					<td>
+						<if condition="$vo['last_login_time'] eq 0">
+							{:lang('USER_HAVE_NOT_LOGIN')}
+						<else />
+							{:date('Y-m-d H:i:s',$vo['last_login_time'])}
+						</if>
+					</td>
+					<td>{$vo.user_email}</td>
+					<td> <a href='#' onclick="abc({$vo['id']})">	
+					<?php if(isset($sj[$i])){ ?> 事假：{$sj[$i]}天 <?php } ?>
+					<?php if(isset($cd[$i])){ ?> 迟到：{$cd[$i]}次 <?php } ?>	
+					<?php if(isset($kg[$i])){ ?> 旷工：{$kg[$i]}天 <?php } ?>	
+					<?php if(isset($bj[$i])){ ?> 病假：{$bj[$i]}天 <?php } ?>	
+					<?php if(isset($zt[$i])){ ?> 早退：{$zt[$i]}次 <?php } ?>	
+					<?php if(isset($wg[$i])){ ?> 违规：{$wg[$i]}次 <?php } ?>		
+					<?php if(!isset($sj[$i]) && !isset($wg[$i])  && !isset($zt[$i])  && !isset($bj[$i])  && !isset($kg[$i])  && !isset($cd[$i])){ ?> 无 <?php } ?>						
+                   	<?php $i++;?>
+                    
+					</a></td>
+                    <td>{$user_statuses[$vo['user_status']]}</td>
+                    <td style="text-align: center;"><?php if($vo['ry_token']!="") {echo '<span class="glyphicon glyphicon-ok" style="color: green;"></span>';}else if($vo['user_status']!=1){echo '<span class="glyphicon glyphicon-ban-circle" style="color: red;" title="已被封禁"></span>';}else{ ?> <a href="javascript:;" data-g="{:url('user/getToken')}" data-s="{$vo.id}" onclick="getToken(this);" style="color:pink;" title="点击获取token">获取</a><?php }?></td>
+					
+					<td>
+		                    <a href='{:url("user/qingjia",array("id"=>$vo["id"]))}'>添加请假</a>
+							<a href='{:url("user/edit",array("id"=>$vo["id"]))}'>{:lang('EDIT')}</a>
+							<a class="js-ajax-delete" href="{:url('user/delete',array('id'=>$vo['id']))}">{:lang('DELETE')}</a>
+							<if condition="$vo['user_status'] eq 1">
+								<a href="{:url('user/ban',array('id'=>$vo['id']))}" class="js-ajax-dialog-btn" data-msg="{:lang('BLOCK_USER_CONFIRM_MESSAGE')}">{:lang('BLOCK_USER')}</a>
+							<else />
+								<a href="{:url('user/cancelban',array('id'=>$vo['id']))}" class="js-ajax-dialog-btn" data-msg="{:lang('ACTIVATE_USER_CONFIRM_MESSAGE')}">{:lang('ACTIVATE_USER')}</a>
+							</if>
+					
+					</td>
+				</tr>
+				</foreach>
+			</tbody>
+		</table>
+		<div class="pagination">{$page}</div>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+	<script>
+
+		jQuery(document).ready(function($) {
+			$('#department_select').val({$departmentid});
+		});
+	</script>
+<script type="text/javascript">
+	    function abc(x) {
+        var url="{:url('user/ck_qj')}?id=" +x;
+        openIframeLayer(url, '请假详细', {
+            area: ['1200px', '700px'],
+            btn: ['确定'],
+            yes: function (index, layero) {
+                //do something
+
+                //console.log(layer.getFrameIndex(index));
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    }
+
+    function getToken(e){
+        $.post($(e).data('g'),{id:$(e).data('s')},function(data){
+            if(data==1){
+                layer.msg('获取成功！');
+                window.location.Reload();
+            }else{
+               layer.msg('获取失败 说明：'+data);
+            }
+        },'json');
+
+    }
+
+    
+</script>
+</body>
+</html>

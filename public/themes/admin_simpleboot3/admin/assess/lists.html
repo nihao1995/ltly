@@ -1,0 +1,53 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>绩效列表</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('assess/lists')}">
+        月份<input type="text" class="form-control js-bootstrap-datetime" name="time" style="width: 200px;" value="{$time|default=''}" >
+        姓名<select class="form-control" name="userid" style="width: 140px;" onchange="dalist(this)">
+            <option value='100'>全部</option>
+        <?php foreach ($names as $x){ ?>
+        <option value="{$x.id}" <?php if($name==$x['id']){ ?>selected<?php } ?> >{$x.user_login}</option>
+        <?php } ?>
+        </select>
+
+
+
+
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+    </form>
+    <table class="table table-hover table-bordered table-list margin-top-20">
+        <thead>
+        <tr>
+            <th style="text-align: center" >ID</th>
+            <th style="text-align: center" >时间</th>
+            <th style="text-align: center" >名字</th>
+            <th style="text-align: center" >违规次数</th>
+            <th style="text-align: center" >本月评分</th>
+            <th style="text-align: center" >备注</th>
+        </tr>
+        </thead>
+        <?PHP foreach ($infos as $v){ ?>
+        <tr>
+            <td style="text-align: center"><b>{$v.username|default=''}</b></td>
+            <td style="text-align: center"><b><a href="{:url('assess/xq')}?id={$v.assess_id}">{$v.assess_id}</a></b></td>
+            <td style="text-align: center"><b><?php echo date("Y-m",$v['time']) ?></b></td>
+            <td style="text-align: center"><b>{$v.count|default='全勤'}</b></td>
+            <td style="text-align: center"><b>{$v.sum|default=''}</b></td>
+            <td style="text-align: center"><b>{$v.commit|default=''}</b></td>
+ </tr>
+        <?PHP } ?>
+
+    </table>
+
+    <div class="table-actions">
+        <ul class="pagination">{$page|default=''}</ul>
+    </div>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+
+</body>
+</html>

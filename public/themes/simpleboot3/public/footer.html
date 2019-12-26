@@ -1,0 +1,24 @@
+<br>
+<!-- Footer ================================================== -->
+<hr>
+<div id="footer">
+    <hook name="footer_start"/>
+    <div class="links">
+        <links>
+            <a href="{$vo.url|default=''}" target="{$vo.target|default=''}">{$vo.name|default=''}</a>&nbsp;
+        </links>
+
+    </div>
+    <p>
+        <notempty name="site_info.site_icp">
+            <span>Copyright © 2011-<?php echo date("Y",time()); ?>  <a style="color:#0070C0;" href="http://www.300c.cn" target="_blank">台州市卓远网络科技有限公司</a> 版权所有</span><a style="color:#0070C0;" href="http://www.miitbeian.gov.cn/" target="_blank">{$site_info.site_icp}</a>
+            <else/>
+            请在后台设置"网站信息"设置"备案信息"
+        </notempty>
+
+
+    </p>
+</div>
+<div id="backtotop">
+    <i class="fa fa-arrow-circle-up"></i>
+</div>

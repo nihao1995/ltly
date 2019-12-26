@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>数据表配置管理</title>
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+        </style>
+</head>
+<body>
+    <div class="wrap js-check-wrap">
+        <ul class="nav nav-tabs">
+            <li><a  href="{:cmf_plugin_url('ModuleConfig://TableConfig/index')}">数据表配置管理</a></li>
+            <li  class="active"><a>字段管理</a></li>
+        </ul>
+        <form class="well form-inline margin-top-20" action="" method="get" accept-charset="utf-8">
+            数据表：
+
+            会员主表
+
+            cmf_zymember_xxx_additional
+        </form>
+
+        <!-- <h3>数据表字段管理</h3> -->
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="theader">
+                    <th width="100">字段名</th>
+                    <th width="100">数据类型</th>
+                    <th width="100">长度</th>
+                    <th width="100">默认</th>
+                    <th width="100">空</th>
+                    <th width="100">主键</th>
+                    <th width="100">自增</th>
+                    <th width="100">注释</th>
+                    <th width="200">操作&nbsp;<a href="javascript:;" class="btn btn-success btn-sm add-config-btn" onclick="addField();">添加字段</a>&nbsp;<a href="javascript:;" class="btn btn-primary btn-sm save-config-btn" style="display: none;" onclick="saveTrows();">保存配置</a></th>
+                </tr>
+            </thead>
+            
+            <tbody class="table-body">
+                <tr>
+                    <td>xxx</td>
+                    <td>100</td>
+                    <td>Int</td>
+                    <td>NULL</td>
+                    <td><input type="checkbox" checked="" disabled></td>
+                    <td><input type="checkbox" disabled></td>
+                    <td><input type="checkbox" disabled></td>
+                    <td>x'x'x</td>
+                    <td>
+                        <a href="javascript:;" class="btn btn-success btn-sm edit-row-btn">编辑</a>
+                        <a href="{:cmf_plugin_url('ModuleConfig://TableConfig/delField')}" class="btn btn-danger btn-sm js-ajax-delete" data-msg="确定删除此配置？">删除</a>
+                    </td>
+
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+    <include file='public/scripts'>
+    <script src="__STATIC__/js/layer/layer.js"></script>
+
+
+    <script type="text/javascript">
+        /**
+         * 添加字段
+         * @return {[type]} [description]
+         */
+        function addField(){
+            var tr = '<tr class="addTrow">';
+            tr += '<td><input type="text" class="form-control" name="ceshi"></td>';
+            tr += '<td><select class="form-control"><option>INT</option><option>VARCHAR</option><option>TEXT</option></select></td>';
+            tr += '<td><input type="text" class="form-control"></td>';
+            tr += '<td><select class="form-control field-default"><option value="1">无</option><option value="2">定义：</option><option value="3">NULL</option><option value="4">CURRENT_TIMESTAMP</option></select><input type="text" class="form-control" style="display: none;"></td>';
+            tr += '<td><input type="checkbox"></td>';
+            tr += '<td><input type="checkbox"></td>';
+            tr += '<td><input type="checkbox"></td>';
+            tr += '<td><input type="text" class="form-control"></td>';
+            tr += '<td><a href="javascript:;" class="btn btn-danger btn-sm remove-row-btn">移除</a></td>';
+            tr += '</tr>';
+            $('.table-body').prepend(tr);
+            changeBtn('add');
+        };
+
+        //切换按钮
+        function changeBtn( type = 'add' ){
+            $('.save-config-btn').show();
+            var rows = $(document).find('.addTrow');
+            if( rows.length  == 0 ){
+                $('.save-config-btn').hide();
+            }
+
+        }
+        //保存配置
+        var saveTrows = function(){
+            var rows = $(document).find('.addTrow');
+            if(rows.length == 0){
+                return false;
+            }
+            var obj = [];
+            console.log(rows);
+            
+            if(obj.length >0 ){
+                //ajax操作
+            }
+
+            layer.msg('保存成功',{icon:1,time:1000});
+            setTimeout(function(){
+                window.location.reload();
+            },1200);
+            
+        }
+
+
+
+
+        /**
+         * 编辑字段
+         * @return {[type]} [description]
+         */
+        $(document).on("click",'.edit-row-btn',function(){
+            // var tr = '<tr>';
+            var tr = '<td><input type="text" class="form-control" name="ceshi"></td>';
+            tr += '<td><select class="form-control"><option>INT</option><option>VARCHAR</option><option>TEXT</option></select></td>';
+            tr += '<td><input type="text" class="form-control"></td>';
+            tr += '<td><select class="form-control field-default"><option value="1">无</option><option value="2">定义：</option><option value="3">NULL</option><option value="4">CURRENT_TIMESTAMP</option></select><input type="text" class="form-control" style="display: none;"></td>';
+            tr += '<td><input type="checkbox"></td>';
+            tr += '<td><input type="checkbox"></td>';
+            tr += '<td><input type="checkbox"></td>';
+            tr += '<td><input type="text" class="form-control"></td>';
+            tr += '<td><a href="javascript:;" class="btn btn-primary btn-sm save-config-btn" style="" onclick="saveTrows();">保存</a>&nbsp;<a href="javascript:;" class="btn btn-danger btn-sm" onclick="cancelEdit(this)">取消</a></td>';
+            // tr += '</tr>';
+            $(this).parents('tr').html(tr);
+
+
+        });
+        //取消按钮
+        var cancelEdit = function(_this){
+            console.log(100);
+            window.location.reload();
+        }
+        /**
+         * 移除字段
+         * @return {[type]} [description]
+         */
+        $(document).on("click",'.remove-row-btn',function(){
+            $(this).parents('tr').remove();
+            changeBtn('remove');
+        });
+        /**
+         * 添加字段-默认（定义：）
+         * @return {[type]} [description]
+         */
+        $(document).on("change",'.field-default',function(){
+            var label_id=($(this).val());
+            console.log(label_id);
+            if(label_id==2){
+                $(this).next('input').show();
+                $(this).next('input').val();
+            }else{
+                $(this).next('input').hide();
+            }
+        });
+
+
+        /**
+         * 获取窗口中的元素，然后返回给父级
+         * @return {[type]} [description]
+         */
+        function callbackdata(){
+            var arr = '';
+            $("input[name=ceshi]").each(function(){
+                arr = $(this).val()+','+arr;
+            })
+            console.log(arr);
+
+
+            return '1'
+        }
+
+    </script>
+
+
+</body>
+</html>

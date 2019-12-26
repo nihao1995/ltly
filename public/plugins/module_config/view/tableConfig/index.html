@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>数据表配置管理</title>
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+        </style>
+</head>
+<body>
+    <div class="wrap js-check-wrap">
+        
+        <ul class="nav nav-tabs">
+            <?php $currentTab = 3 ;?>
+            <include file='public/nav' >
+        </ul>
+
+        <div class="alert alert-warning margin-top-20" role="alert">警告! 必须要按照公司规范来操作。如不操作规范，出现错误，请自行修改.</div>
+        <form class="well form-inline margin-top-20" action="" method="get" accept-charset="utf-8">
+            <select class="form-control" id="module-select" onchange="moduleSelectChange(this);">
+                <option value="">请选择模块</option>
+                <volist name="list_info" id="item">
+                    <option value="{$item.module_name}">{$item.module_name}</option>
+                </volist>
+            </select>
+            <!-- <a href="javascript:;" onclick="addTable();" class="btn btn-success ml-10">添加表</a> -->
+        </form>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="theader">
+                    <th width="100">当前模块</th>
+                    <th width="100">所属模块</th>
+                    <th width="100">所需表名</th>
+                    <th width="100">表注释</th>
+                    <th width="100">描述</th>
+                    <th width="100">状态</th>
+                    <th width="200">操作 &nbsp;<a href="{:cmf_plugin_url('ModuleConfig://TableConfig/updateFile')}" class="btn btn-danger btn-sm update-config-btn js-ajax-delete" data-msg="确定更新吗？" title="用于更新数据库文件到本地，仅限开发者使用"><i class="fa fa-refresh normal"></i> 更新数据库到本地</a></th>
+                </tr>
+            </thead>
+            
+            <tbody class="table-body">
+                <volist name="list_info" id="item">
+                    <volist name="item" id="vo">
+                        <volist name="vo" id="k">
+                        <tr>
+                            <td>{$item.module_name}</td>
+                            <td>{$k.ss_module}</td>
+                            <td>{$k.ss_table}</td>
+                            <td>{$k.ss_table_annotation}</td>
+                            <td>{$k.ss_describe}</td>
+                            <td class="td-status">
+                                <switch name="$k.status">
+                                    <case value="1">正常</case>
+                                    <case value="2">模块缺失</case>
+                                    <case value="3">表缺失</case>
+                                    <case value="4">字段缺失</case>
+                                    <default />default
+                                </switch>
+                            </td>
+                            <td>
+                                <switch name="$k.status">
+                                    <case value="4">
+                                        <a href="javascript:;" onclick="fieldMissing('{$item.module_key}','{$k.ss_modulename}','{$k.ss_table}');" class="btn btn-success btn-sm">补充缺失</a>
+                                    </case>
+                                </switch>
+                                
+                                <!-- <a href="{:cmf_plugin_url('ModuleConfig://TableConfig/fieldManage')}" class="btn btn-success btn-sm">字段管理</a>
+                                <a href="{:cmf_plugin_url('ModuleConfig://TableConfig/clearTable',['tableName'=>'123fads'])}" class="btn btn-danger btn-sm js-ajax-delete">清空</a> -->
+                            </td>
+                        </tr>
+                        </volist>
+                    </volist>
+                </volist>
+            </tbody>
+
+        </table>
+    </div>
+    <include file='public/scripts'>
+    <script src="__STATIC__/js/layer/layer.js"></script>
+    <script src="__STATIC__/js/custom/custom.js"></script>
+
+
+    <!-- 弹出层 -->
+    <script type="text/javascript">
+
+        /**
+         * 添加表
+         * @param {[type]} e [description]
+         */
+        function addTable(e) {
+
+            let url = "{:cmf_plugin_url('ModuleConfig://TableConfig/addTable')}";
+            layer.open({
+                type: 2,
+                title: '创建数据表',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['900px', '650px'],
+                btn:['保存','关闭'],
+                fixed:false,
+                content: url, //iframe的url
+                yes: function (index, layero) {
+                    var body = layer.getChildFrame('body', index); 
+
+                    parentInfo = window["layui-layer-iframe" + index].callbackdata();
+                    console.log(parentInfo);
+
+
+
+                    //先利用ajax提交
+                    //在进行关闭窗口操作
+                    //然后刷新页面
+
+                    layer.msg('添加成功',{icon:1,time:1000});
+                    setTimeout(function(){            
+                        layer.closeAll('iframe');
+                        //window.location.reload();  
+                    },1400) 
+
+
+                }
+            });
+        }
+
+        /**
+         * 字段缺失
+         * @param {[type]} e [description]
+         */
+        function fieldMissing(moduleKey,moduleName,tableName) {
+            let url = "{:cmf_plugin_url('ModuleConfig://TableConfig/fieldLose')}?moduleName="+moduleName+'&tableName='+tableName+'&modulekey='+moduleKey;
+            layer.open({
+                type: 2,
+                title: '字段缺失',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['700px', '500px'],
+                btn:['添加','关闭'],
+                fixed:false,
+                content: url, //iframe的url
+                yes: function (index, layero) {
+                    var body = layer.getChildFrame('body', index); 
+
+                    parentInfo = window["layui-layer-iframe" + index].callbackdata();
+                    console.log(parentInfo);
+
+
+
+                    $.ajax({
+                        url: "{:cmf_plugin_url('ModuleConfig://TableConfig/addField')}",
+                        data: {
+                            modulekey: parentInfo.moduleKey,
+                            moduleName: parentInfo.modulesName,
+                            tableName: parentInfo.tableName,
+                            field: parentInfo.field,
+                        },
+                        type:'POST',
+                        dataType:'json',
+                        success: function( result,status,xhr ) {
+                            if (result.status=="success") {
+                                layer.msg(result.message,{icon:1,time:1000});
+                                setTimeout(function(){            
+                                    layer.closeAll('iframe');
+                                    window.location.reload();  
+                                },1400)
+                            }else{
+                                layer.msg(result.message,{icon:7,time:1000});
+                                setTimeout(function(){            
+                                    layer.closeAll('iframe');
+                                    window.location.reload();  
+                                },1400)
+                            }
+
+                        },
+                    });
+
+
+                }
+            });
+        }
+
+
+    //模块选择
+    var moduleSelectChange = function(_this){
+        var value = $(_this).val();
+        $(document).find('tr').each(function(){
+            var symbol = $(this).find('td:eq(0)').text();
+            // console.log(symbol);
+                console.log(value)
+            if( (symbol == value || value == '') ){
+                $(this).css( 'display' , '' );
+            }else{
+                $(this).css( 'display' , 'none' );
+            }
+        });
+        $('.theader').css( 'display' , '' );
+    }
+
+
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <table class="table table-hover table-bordered table-list margin-top-20">
+           <volist name='gw' id='list'>
+            <tr>
+                <th style="width: 170px">{$list['name']}</th>
+                <td style="text-align: center">{$list['remark']}</td>
+            </tr>
+           </volist>
+        </table>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

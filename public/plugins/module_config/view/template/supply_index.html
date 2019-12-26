@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>模块访问配置</title>
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+        </style>
+</head>
+<body>
+    <div class="wrap js-check-wrap">
+        <ul class="nav nav-tabs">
+           <?php $currentTab  =  4 ; ?>
+           <include file='public/nav'>
+        </ul>
+        <form class="well form-inline margin-top-20" action="" method="get" accept-charset="utf-8">
+            <select class="form-control" id="module-select" onchange="moduleSelectChange(this);">
+                <option value="">全部模块</option>
+                <volist name="moduleList" id="vo">
+                    <option value="{$vo.symbol}">{$vo.name}</option>
+                </volist>
+            </select>
+            状态
+            <select class="form-control" id="status-select" onchange="statusSelectChange(this);">
+                <option value="100">全部</option>
+                <option value="1">已实现</option>
+                <option value="0">未实现</option>
+                <option value="-1">未配置</option>
+            </select>
+        </form>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="theader">
+                    <th width="50">序号</th>
+                    <th width="100">模块名</th>
+                    <th width="100">模块标识</th>
+                    <th width="100">模块版本</th>
+                    <th width="350">地址</th>
+                    <th>说明</th>
+                    <th width="200">操作&nbsp;<a href="javascript:;" class="btn btn-success btn-sm add-config-btn" onclick="addTrows();">添加配置</a>&nbsp;<a href="javascript:;" class="btn btn-primary btn-sm save-config-btn" style="display: none;" onclick="saveTrows();">保存配置</a></th>
+                </tr>
+            </thead>
+            <tbody class="table-body">
+
+            </tbody>
+        </table>
+    </div>
+<include file='public/scripts'>
+<script src="__STATIC__/js/layer/layer.js"></script>
+<script src="__STATIC__/js/custom/custom.js"></script>
+<script>
+    //添加配置
+    var addTrows = function(){
+        var option = $('#module-select').html();
+        var selectControl = '<select class="form-control add-config-module-select">'+option+'</select>';
+        var tr = '<tr class ="addTrow" >';
+        tr += '<td>-</td>';
+        tr += '<td>'+selectControl+'</td>';
+        tr += '<td class="module-name">-</td>';
+        tr += '<td style="word-wrap: break-word;word-break: break-all;"><input typt="text" class="form-control" placeholder="示例：plugins/module_config/admin_index/index"/></td>';
+        tr += '<td><textarea class="form-control" rows="3" style="resize:none;" placeholder="请输入接口说明"></textarea></td>';
+        tr += '<td>--</td>';
+        tr += '<td>';
+            tr += '<a href="#" class="btn btn-primary btn-sm remove-row-btn">移除</a>';
+        tr += '</td>';
+        tr += '</tr>';
+        $('.table-body').prepend(tr);
+        changeBtn('add');
+    }
+
+    //移除行
+    $(document).on('click','.remove-row-btn',function(){
+        $(this).parents('tr').remove();
+        changeBtn('remove');
+    });
+
+    //选择模块
+    $(document).on('click','.add-config-module-select',function(){
+        console.log(1000);
+        var symbol =  $(this).val();
+        $(this).parents('tr').find('.module-name').text(symbol);
+    });
+
+    //切换按钮
+    var changeBtn = function( type = 'add' ){
+        $('.save-config-btn').css( 'display' , '' );
+        var rows = $(document).find('.addTrow');
+        if( rows.length  == 0 ){
+            $('.save-config-btn').css('display','none');
+        }
+    }
+
+    //保存配置
+    var saveTrows = function(){
+        var rows = $(document).find('.addTrow');
+        if(rows.length == 0){
+            return false;
+        }
+        var obj = [];
+        $.each(rows,function(){
+            var symbol = $(this).find('td:eq(1) select').val();
+            $(this).find('td:eq(0)').css('backgroundColor','');
+            console.log(symbol.length);
+            if(symbol.length == 0){
+                $(this).focus();
+                $(this).find('td:eq(0)').css('backgroundColor','red');
+                layer.msg('请选择模块！',function(){});
+                return false;
+            }
+
+            var moduleName = $(this).find('td:eq(1) select option:selected').text();
+
+            var address = $(this).find('td:eq(3) input').val();
+            if(address.length == 0){
+                $(this).focus();
+                $(this).find('td:eq(0)').css('backgroundColor','red');
+                layer.msg('请填写api地址！',function(){});
+                return false;
+            }
+
+            var explain = $(this).find('td:eq(4) textarea').val();
+            if(explain.length == 0){
+                $(this).focus();
+                $(this).find('td:eq(0)').css('backgroundColor','red');
+                layer.msg('请填写接口说明！',function(){});
+                return false;
+            }
+            var item = {};
+            item ['moduleName'] = moduleName;
+            item ['symbol'] = symbol
+            item ['api'] = address;
+            item ['explain'] = explain;
+            obj.push(item);
+        });
+        if(obj.length >0 ){
+            $.post("{:cmf_plugin_url('ModuleConfig://VisitConfig/addConfig')}",{data:obj},function(data){
+                var icon  = (data.code == 200)?1:5;
+                layer.msg(data.message,{icon:icon});
+                if(data.code == 200){
+                    setTimeout(function(){
+                        window.location.reload();
+                    },1200);
+                }
+            },'json');
+        }
+        
+    }
+
+    var rowTemporary = null;
+    //修改配置
+    var editConfig = function(_this,id){
+        if( rowTemporary != null ){
+            layer.msg('请先关闭正在编辑的项！',function(){})
+            return false;
+        }
+        var thisRow = $(_this).parents('tr');
+        rowTemporary = thisRow.html();
+        var option = $('#module-select').html();
+        var select = '<select class="form-control add-config-module-select">'+option+'</select>';
+        var thisModulename = thisRow.find('td:eq(1)').text();
+        var thisSymbol = thisRow.find('td:eq(2)').text();
+        thisRow.find('td:eq(1)').html(select);
+        console.log(thisRow.find('.add-config-module-select option'));
+        thisRow.find('.add-config-module-select option').each(function(){
+            if($(this).attr('value') == thisSymbol ){
+                $(this).attr('selected','selected');
+            }
+        });
+        var thisApi = thisRow.find('td:eq(3)').text();
+        var input = '<input typt="text" class="form-control" value="'+thisApi+'"/>';
+        thisRow.find('td:eq(3)').html(input);
+
+        var thisExplain = thisRow.find('td:eq(4)').text();
+        var textarea = '<textarea class="form-control" rows="3" style="resize:none;" placeholder="请输入接口说明">'+thisExplain+'</textarea>';
+        thisRow.find('td:eq(4)').html(textarea);
+
+        var btn = '<a href="javascript:;" onclick="saveEdit(this,'+id+');" class="btn btn-primary btn-sm">保存</a>&nbsp;&nbsp;<a href="javascript:;"  class="btn btn-default btn-sm cancel-btn" onclick="cancelEdit(this);">取消</a>';
+        $(_this).parent().html(btn);
+
+    }
+
+    //取消按钮
+    var cancelEdit = function(_this){
+        $(_this).parents('tr').html(rowTemporary);
+        rowTemporary = null;
+    }
+
+    //保存按钮
+    var saveEdit = function(_this,id){
+        var thisRow = $(_this).parents('tr');
+        var symbol = thisRow.find('td:eq(1) select').val();
+        thisRow.find('td:eq(0)').css('backgroundColor','');
+        if(symbol.length == 0){
+            thisRow.find('td:eq(0)').css('backgroundColor','red');
+            layer.msg('请选择模块！',function(){});
+            return false;
+        }
+
+        var moduleName = thisRow.find('td:eq(1) select option:selected').text();
+
+        var address = thisRow.find('td:eq(3) input').val();
+        if(address.length == 0){
+
+            thisRow.find('td:eq(0)').css('backgroundColor','red');
+            layer.msg('请填写api地址！',function(){});
+            return false;
+        }
+
+        var explain = thisRow.find('td:eq(4) textarea').val();
+        if(explain.length == 0){
+            thisRow.find('td:eq(0)').css('backgroundColor','red');
+            layer.msg('请填写接口说明！',function(){});
+            return false;
+        }
+        var item = {};
+        item ['name'] = moduleName;
+        item ['symbol'] = symbol;
+        item ['api'] = address;
+        item ['explain'] = explain;
+
+        $.post("{:cmf_plugin_url('ModuleConfig://VisitConfig/editConfig')}",{id:id,newConfig:item},function(data){
+            banBtn(_this);
+            var icon  = (data.code == 200)?1:5;
+            layer.msg(data.message,{icon:icon});
+            if(data.code == 200){
+
+                setTimeout(function(){
+                    window.location.reload();
+                },1200);
+            }else{
+                cancelBan(_this);
+            }
+        },'json');
+    }
+
+    //状态选择
+    var statusSelectChange = function(_this){
+        var value = $(_this).val();
+        var moduleSymbol = $('#module-select').val();
+        $(document).find('tr').each(function(){
+            var status = $(this).find('.td-status').data('tag'); 
+            var moduleValue = $(this).find('td:eq(2)').text();
+            if( (status == value || value == 100) && ( moduleSymbol == moduleValue || moduleSymbol == '' ) ){
+                $(this).css( 'display' , '' );
+            }else{
+                $(this).css( 'display' , 'none' );
+            }
+        });
+        $('.theader').css( 'display' , '' );
+    }
+    //模块选择
+    var moduleSelectChange = function(_this){
+        var value = $(_this).val();
+        var statusValue = $('#status-select').val();
+        $(document).find('tr').each(function(){
+            var symbol = $(this).find('td:eq(2)').text();
+            var status = $(this).find('.td-status').data('tag');
+            if( (symbol == value || value == '') && (status == statusValue || statusValue ==100)  ){
+                $(this).css( 'display' , '' );
+            }else{
+                $(this).css( 'display' , 'none' );
+            }
+        });
+        $('.theader').css( 'display' , '' );
+    }
+
+    //查看配置详细
+    var showParticular = function( moduleName , id ){
+        var _this = $(this);
+        layer.open({
+            type: 2,
+            area: ['80%', '80%'],
+            btn:['保存','关闭'],
+            title:"接口详情配置",
+            fixed: false, //不固定
+            maxmin: true,
+            success:function(layero,index){
+                //layer.full(index);
+            },
+            content: "{:cmf_plugin_url('ModuleConfig://VisitConfig/supplyParticular')}?moduleName="+moduleName+'&id='+id,
+            yes:function(index){
+                var res = window["layui-layer-iframe" + index].configData();
+                console.log(res);
+                banBtn('.layui-layer-btn0');
+                $.post("{:cmf_plugin_url('ModuleConfig://VisitConfig/saveConfigParticular')}",{id:res.id,remark:res.remark,moduleName:moduleName},function(data){
+                    console.log(data);
+                    //data = JSON.parse(data);
+                    var icon = (data.code == 200) ? 1 : 5;
+                    layer.msg(data.message,{icon:icon});
+                    if(data.code == 200){
+                        setTimeout(function(){
+                            window.location.reload();
+                        },1200);
+                    }else{
+                        cancelBan('.layui-layer-btn0');
+                    }
+                },'json');
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>

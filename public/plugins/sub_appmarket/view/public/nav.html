@@ -1,0 +1,9 @@
+
+<!-- 导航菜单 选项卡菜单-->
+<!-- 页面定义 currentTab   li 加上判断 -->
+<if condition="cmf_auth_check(cmf_get_current_admin_id(),'plugin/sub_appmarket/AdminIndex/index')">
+	<li <?php if( $currentTab == 1 ) echo 'class="active"';?> ><a href="{:cmf_plugin_url('SubAppmarket://admin_index/index')}">应用市场</a></li>
+</if>
+<?php if (cmf_auth_check(cmf_get_current_admin_id(),'plugin/SubAppmarket/Publish/index') ) { ?>
+	<!-- <li <?php if( $currentTab == 2 ) echo 'class="active"';?> ><a href="{:cmf_plugin_url('SubAppmarket://admin_index/buyRecord')}">购买记录</a></li> -->
+<?php } ?>

@@ -1,0 +1,73 @@
+<include file="public@head" />
+<style>
+	.nav-tabs li a{color: #18BC9C;}
+	#list-table{font-size: 12px;background: #fff;background: #fff; }
+</style>
+</head>
+<body style="padding-top: 0px;font-size: 12px;background: #fff;background: #fff;">
+	<div id="directory-tree">
+		<div style="padding: 20px;">
+			<h3>选择压缩的文件</h3>
+			<table class="table table-hover table-bordered table-list" id="list-table">
+				<thead>
+					<tr>
+						<td width="50%">勾选</td>
+						<td>路径</td>
+					</tr>
+				</thead>
+				<tbody>
+					{$list}
+				</tbody>
+			</table>
+			<button type="button" class="btn btn-default" onclick="getChecked()">压缩</button>
+		</div>
+	</div>
+
+	<script src="__STATIC__/js/admin.js"></script>
+	<script src="__STATIC__/js/layer/layer.js"></script>
+	<script>
+	    $(document).ready(function() {
+	        Wind.css('treeTable');
+	        Wind.use('treeTable', function() {
+	            $("#list-table").treeTable({
+	                indent : 20
+	            });
+	        });
+	    });
+	</script>
+
+
+	<script>
+		// 执行文件压缩功能
+		var getChecked = function(){
+			let url = '<?php echo cmf_get_domain()."/".cmf_get_extra_dir()."/portal/backup/export_file"; ?>';
+			// let url = 'http://192.168.1.88:20000/public/portal/backup/export_file';
+			// console.log(url);
+
+			var insert = [];
+			var trList = $('#list-table tbody tr');
+			$.each( trList , function(){
+				let _this = $(this);
+				let check = _this.find( 'input[type=checkbox]' ).is(':checked');
+				if( true == check ){
+					let path = _this.find('td:eq(1)').text();
+					// window.parent.res.push( path );
+					insert.push( path );
+					
+				}
+			});
+
+
+			console.log(insert);
+			$.post( url , {data:insert } ,function( data ){
+				console.log(data);
+				data = JSON.parse(data);
+				layer.msg(data.message);
+				
+			} );	
+			
+			return insert;
+		}
+	</script>
+</body>
+</html>

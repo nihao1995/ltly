@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>数据表配置管理</title>
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+        </style>
+</head>
+<body>
+    <div class="wrap js-check-wrap" id="addFormJt">
+
+        <form class="form-horizontal well margin-top-20">
+            <div class="form-group">
+                <label class="col-xs-2 control-label">选择模块</label>
+                <div class="col-xs-4">
+                    <select class="form-control">
+                        <option>全部模块</option>
+                        <option>会员模块</option>
+                        <option>消息模块</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tableName" class="col-xs-2 control-label">填写表名</label>
+                <div class="col-xs-10">
+                    <p class="form-control-static">cmf_zymember_ <input type="text" class="form-control" id="tableName" placeholder="请输入表名" style="width: 160px; display: inline;"> _additional</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="annotation" class="col-xs-2 control-label">表注释</label>
+                <div class="col-xs-6">
+                    <input type="text" class="form-control" id="annotation" placeholder="注释">
+                </div>
+            </div>
+        </form>
+
+
+        <h4>创建数据表字段</h4>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="theader">
+                    <th width="100">字段名</th>
+                    <th width="100">数据类型</th>
+                    <th width="100">长度</th>
+                    <th width="100">默认</th>
+                    <th width="100">空</th>
+                    <th width="100">主键</th>
+                    <th width="100">自增</th>
+                    <th width="100">注释</th>
+                    <th width="200">操作&nbsp;<a href="javascript:;" class="btn btn-success btn-sm add-config-btn" onclick="addField();">添加字段</a></th>
+                </tr>
+            </thead>
+            
+            <tbody class="table-body">
+                <tr>
+                    <td><input type="text" class="form-control" name="ceshi"></td>
+                    <td>
+                        <select class="form-control">
+                            <option>INT</option>
+                            <option>VARCHAR</option>
+                            <option>TEXT</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control"></td>
+                    <td>
+                        <select class="form-control field-default">
+                            <option value="1">无</option>
+                            <option value="2">定义：</option>
+                            <option value="3">NULL</option>
+                            <option value="4">CURRENT_TIMESTAMP</option>
+                        </select>
+                        <input type="text" class="form-control" style="display: none;">
+                    </td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="text" class="form-control"></td>
+                    <td>
+                        <a href="javascript:;" class="btn btn-danger btn-sm remove-row-btn">移除</a>
+                    </td>
+
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+    <include file='public/scripts'>
+    <script src="__STATIC__/js/layer/layer.js"></script>
+
+
+    <script type="text/javascript">
+        /**
+         * 添加字段
+         * @return {[type]} [description]
+         */
+        function addField(){
+            var tr = '<tr>';
+            tr += '<td><input type="text" class="form-control" name="ceshi"></td>';
+            tr += '<td><select class="form-control"><option>INT</option><option>VARCHAR</option><option>TEXT</option></select></td>';
+            tr += '<td><input type="text" class="form-control"></td>';
+            tr += '<td><select class="form-control field-default"><option value="1">无</option><option value="2">定义：</option><option value="3">NULL</option><option value="4">CURRENT_TIMESTAMP</option></select><input type="text" class="form-control" style="display: none;"></td>';
+            tr += '<td><input type="checkbox"></td>';
+            tr += '<td><input type="checkbox"></td>';
+            tr += '<td><input type="checkbox"></td>';
+            tr += '<td><input type="text" class="form-control"></td>';
+            tr += '<td><a href="javascript:;" class="btn btn-danger btn-sm remove-row-btn">移除</a></td>';
+            tr += '</tr>';
+            $('.table-body').prepend(tr);
+        };
+
+
+        /**
+         * 移除字段
+         * @return {[type]} [description]
+         */
+        $(document).on("click",'.remove-row-btn',function(){
+            $(this).parents('tr').remove();
+        });
+        /**
+         * 添加字段-默认（定义：）
+         * @return {[type]} [description]
+         */
+        $(document).on("change",'.field-default',function(){
+            var label_id=($(this).val());
+            console.log(label_id);
+            if(label_id==2){
+                $(this).next('input').show();
+                $(this).next('input').val();
+            }else{
+                $(this).next('input').hide();
+            }
+        });
+
+
+        /**
+         * 获取窗口中的元素，然后返回给父级
+         * @return {[type]} [description]
+         */
+        function callbackdata(){
+            var arr = '';
+            $("input[name=ceshi]").each(function(){
+                arr = $(this).val()+','+arr;
+            })
+            console.log(arr);
+
+
+            return '1'
+        }
+
+    </script>
+
+</body>
+</html>

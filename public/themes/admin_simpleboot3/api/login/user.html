@@ -1,0 +1,120 @@
+<!--QQ浏览器强制全屏-->
+<meta name="x5-orientation" content="portrait">
+<meta name="x5-fullscreen" content="true">
+<meta name="x5-page-mode" content="app">
+<style>
+.ms .ms-it{
+  line-height: 30px;font-size: 16px;text-indent: 10pt;
+  padding-left: 5px;
+}
+.glyphicon{
+  color:#457DC9;
+  margin-right: 10px;
+}
+
+#lxr_panel{
+  display: none;
+}
+h4{
+  text-indent: 5pt;
+}
+</style>
+<include file="public@header" />
+</head>
+<body>
+
+<div  style="margin-top: 20px;width: 100%;min-width: 260px;margin-left: 0;margin-right: 0;overflow-x: hidden; ">
+  <div class="row" style="margin: 20px 0px;padding: 20px 0px;">
+    <div class="col-md-12" style="padding: 0 10px;">
+      <div style="margin-left: auto;margin-right: auto;">
+        <div style="text-align: center;">
+          <if condition="empty($avatar)">
+              <img src="__TMPL__/public/assets/images/default-thumbnail.png" id="thumbnail-preview" width="190" height="190"  style="cursor: pointer;border-radius: 50%"/>
+              <else/>
+              <img src="{:cmf_get_image_preview_url($avatar)}" id="thumbnail-preview" width="190" height="190" style="cursor: pointer;border-radius: 50%"/>
+          </if>
+        </div>
+        <div style="margin-left: auto;margin-right: auto;  padding-top: 20px;">
+          <div style="text-align: center;height:50px;line-height: 50px;margin-top: 20px;color:#457DC9;letter-spacing: 2px;"><h2>{$user_login} | <span style="color:#457DC9;font-size: 26px;font-weight: 500;">{$role['name']}</span></h2></div>
+        </div>
+      </div>
+      <div class="ms">
+        <h4 style="border-bottom: 1px solid #ccc;height:35px;line-height: 35px;"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>基本信息<a class="txlbtn" id="txlbtn" style="height: 30px;background-color: #457DC9;border-radius: 5px;line-height: 30px;padding: 0px 5px;cursor: pointer;font-size: 14px;font-weight: 800;color: white;border: 1px solid #ccc;float: right;text-decoration: none;" onclick="$('#lxr_panel').css('display','block');">添加到通讯录</a></h4>
+        <div class="ms-it">
+          <span class="glyphicon glyphicon-th" aria-hidden="true"></span><span>工号：</span><span style="letter-spacing: 1.5px;font-size:16px;font-weight: 800;font-style:italic;">{$employee_id}</span>
+        </div>
+        <div class="ms-it">
+          <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span><span>电话：</span><span>{$mobile}</span>
+        </div>
+        <div class="ms-it">
+          <span class="glyphicon glyphicon-phone-alt" aria-hidden="true"></span><span>固话：</span><span>{$company['tel']}</span>
+        </div>
+        <div class="ms-it">
+          <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span><span>邮箱：</span><span>{$user_email}</span>
+        </div>
+        <?php if(!empty($qq)){?>
+        <div class="ms-it">
+          <!--i style="display: inline-block; width:22px;height:22px;background-image: url('__STATIC__/images/qq.png');background-size: 22px 22px;background-repeat: no-repeat;vertical-align: middle;" class="" aria-hidden="true"></i--><span class="
+glyphicon glyphicon-exclamation-sign"></span><span>Q&nbsp;&nbsp;&nbsp;Q：</span><span>{$qq}</span>
+        </div>
+        <?php }?>
+        <div class="ms-it">
+          <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span><span>地址：</span><span style="height: auto;">{$company['address']}</span>
+        </div>
+        <h4 style="border-bottom: 1px solid #ccc;height:35px;line-height: 35px;"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>个人介绍</h4>
+        <div style="max-height: 200px;overflow: hidden;margin-left: auto;margin-right: auto;line-height: 25px;text-indent: 1em;letter-spacing: 2px;font-family: '微软雅黑';margin-top: 20px;">
+          <p>{$signature}</p>
+        </div>
+      </div>
+    </div>
+  </div> 
+  <notempty name="list">
+  <div class="row">
+    <div class="col-md-12">
+          <h4><span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span>信息展示</h4>
+          <volist name="list" id="vo">
+          <div class="list-show"  style="margin-top: 10px;border: 2px solid #ccc;padding: 20px;">
+              {$vo.content}
+            </div>
+          </volist>
+    </div>
+  </div>   
+</notempty>
+<div style="width: 100%;height: 20px;line-height:20px;padding: 50px 0px;text-align: center;">
+  没有更多内容了~~
+</div>
+<div id="lxr_panel" style="width: 100%;height: 100%;position: fixed;top: 0px; background-color: rgba(128,128,128,0.8);">
+  
+ <div style="margin-top: 120px;width: 156px;height: 156px;border:3px solid #457DC9;margin-left: auto;margin-right: auto;">
+  <img src="{$lxr_ewm}" style="width: 150px;height: 150px;" alt="">
+ </div>
+ <h4 style=";margin:20px;padding:10px;width:200px;background-color:#ccc;margin-left:auto;margin-right:auto;text-align: center;color: #457DC9;font-weight: 800" ><span class="glyphicon glyphicon-qrcode"></span>长按二维码识别或扫码识别</h4>
+ <div style="padding-top: 50px;text-align: center;">
+   <button class="btn btn-primary">关闭</button>
+ </div>
+</div>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script src="__STATIC__/js/layer/layer.js"></script>
+<script>
+  $('.list-show img').each(function(){
+    if($(this).width()>$('.list-show').width()){
+      $(this).css('width','100%');
+    }
+  });
+
+  $('.list-show video').each(function(){
+      if($(this).width()>$('.list-show').width()){
+        $(this).css('width','100%');
+      }
+  });
+
+$('#lxr_panel').click(function(){
+  $(this).css('display','none');
+});
+
+
+</script>
+</body>
+
+</html>

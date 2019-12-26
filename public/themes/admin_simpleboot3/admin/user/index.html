@@ -1,0 +1,87 @@
+<include file="public@header" />
+<style type="text/css">
+    table th,table td{text-align: center;}
+</style>
+</head>
+<body>
+	
+	<div class="wrap js-check-wrap">
+		<div>
+			<h4>{$company.company_name} 员工管理</h>
+		</div>
+
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="">管理员</a></li>
+			<li><a href="{:url('user/add')}">员工添加</a></li>
+		</ul>
+        <form class="well form-inline margin-top-20" method="post" action="{:url('User/index')}">
+            
+        </form>
+        <table class="table table-bordered">
+        	<thead>
+        		<tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>部门</th>
+                    <th>职位</th>
+                    <th>手机号码</th>
+                    <th>邮箱</th>
+                    <th>最后登录时间</th>
+                    <th>最后登录IP</th>
+                    <th>用户状态</th>
+                    <th width="150">操作</th>
+        		</tr>
+        	</thead>
+        	<tbody>
+                <volist name="userList" id="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td><a href="{:url('admin/user/edit')}?id={$vo.id}">{$vo.user_login}</a></td>
+                    <td>{$vo.department}</td>
+                    <td>{$vo.role}</td>
+                    <td>{$vo.mobile|default="未设置"}</td>
+                    <td>{$vo.user_email|default="未设置"}</td>
+                    <td>
+                        <if condition="empty($vo['last_login_time'])">
+                            用户还未登录
+                            <else />
+                            {:date('Y-m-d H:i:s',$vo.last_login_time)}
+                        </if>
+                    </td>
+                    <td>
+                        <if condition="empty($vo['last_login_ip'])">
+                            用户还未登录
+                            <else />
+                            {$vo.last_login_ip}
+                        </if>
+                    </td>
+                    <td>
+                        <!-- 用户状态 -->
+                        <php>
+                            $color = ($vo['user_status'] == 0)?"color:red;":"color:green;";
+                            echo  '<span style="'.$color.'">'.$statusStr[$vo['user_status']].'</span>';
+                        </php>
+                    </td>
+                    <td>
+                        <a href="{:url('admin/user/edit')}?id={$vo.id}" class="btn btn-success btn-sm">编辑</a>
+                        <if condition="$vo['user_status'] eq 0">
+                                <a href="{:url('admin/user/cancelBan')}?id={$vo.id}" class="btn btn-warning btn-sm" >启用</a>
+                            <else />
+                                <a href="{:url('admin/user/ban')}?id={$vo.id}" class="btn btn-warning btn-sm" >禁用</a>
+                        </if>
+                        <if condition="$vo['id'] neq 1">
+                            <a href="{:url('admin/user/delete')}?id={$vo.id}" class="btn btn-danger btn-sm js-ajax-delete" data-msg="确定要删除吗？">删除</a>
+                        </if> 
+                    </td>
+                </tr>
+                </volist>
+        	</tbody>
+        </table>
+
+	<div class="pagination">
+     {$userList->render()}   
+    </div>
+	</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>模块访问配置</title>
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+        </style>
+</head>
+<body>
+    <div class="wrap js-check-wrap">
+        <ul class="nav nav-tabs">
+           <?php $currentTab  =  6 ; ?>
+           <include file='public/nav'>
+        </ul>
+        <div style="clear: both; height: 20px;"></div>
+        <a href="javascript:;" class="btn btn-success btn-big add-config-btn" onclick="addcat();">
+            <i class="fa fa-plus-circle normal"></i> 添加版本
+        </a>
+        <div style="clear: both; height: 20px;"></div>
+
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="theader">
+                    <th>序号</th>
+                    <th>版本名称</th>
+                    <th>版本号</th>
+                    <th>添加时间</th>
+                    <th>说明</th>
+                    <th width="200">操作</th>
+                </tr>
+            </thead>
+            <tbody class="table-body">
+            </thead>
+            <tbody>
+                <volist name="data" id="vo">
+                <tr>
+                    <td width="50">{$vo.id}</td>
+                    <td width="200">{$vo.name}</td>
+                    <td width="100">{$vo.versions}</td>
+                    <td width="200">{:date('Y-m-d H:i:s',$vo.add_time)}</td>
+                    <td >{$vo.describe}</td>
+                    <td>
+                        <a href="{:cmf_plugin_url('ModuleConfig://TemplateFrame/frameDel')}?id={$vo.id}"    class="btn btn-sm btn-danger js-ajax-delete" data-msg="确定删除吗？">删除</a>    <!-- delete变为deleteMember方法 --> 
+                    </td>
+                </tr>
+                </volist>
+            </tbody>
+
+            </tbody>
+        </table>
+    </div>
+<include file='public/scripts'>
+<script src="__STATIC__/js/layer/layer.js"></script>
+<script src="__STATIC__/js/custom/custom.js"></script>
+<script>
+
+    /**
+     * 添加栏目
+     */
+    function addcat(){
+        let addurl = "{:cmf_plugin_url('ModuleConfig://TemplateFrame/frameAdd')}";
+        layer.open({
+            type: 2,
+            title: '添加版本',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['800px', '500px'],
+            btn:['提交','关闭'],
+            fixed:false,
+            content: addurl, //iframe的url
+            yes:function(index, layero){
+                var body = layer.getChildFrame('body', index); 
+
+                parentInfo = window["layui-layer-iframe" + index].callbackdata();
+                console.log(parentInfo);
+
+                $.ajax({   
+                    url:addurl,
+                    type:'post',
+                    data:{  
+                       name : parentInfo.name,  
+                       describe : parentInfo.describe,  
+                       src : parentInfo.src, 
+                       type : parentInfo.type 
+                    },  
+                    dataType:'json',
+                    success:function(datas){
+                        console.log(datas.status);
+                        
+                        if(datas.status=='success'){
+                            layer.msg(datas.message,{time:1500},function(){
+                                layer.closeAll();
+                                window.location.reload(); 
+                            });
+                        }else if(datas.status=='error'){
+                            layer.msg(datas.message);
+                        }
+                    },
+                    error:function(data){
+                        layer.msg('添加失败');
+                        return false;
+                    }
+                })
+                
+            }
+
+        });
+    }
+
+</script>
+</body>
+</html>

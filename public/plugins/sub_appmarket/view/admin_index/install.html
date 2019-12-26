@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登陆</title>
+    <link href="__PLUGIN_TMPL__/public/assets/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <include file='public/head'>
+        <style>
+            table th, table td{text-align: center;}
+            .ml-10 { margin-left: 10px; }
+			.layui-icon{font-size: 14px !important;}
+			.layui-form-label{ width: auto;}
+			.layui-btn.layui-btn-sm .fa{ font-size: 14px !important;}
+			.mr4{ margin-right: 4px;}
+			.layui-form-item{ margin-bottom: 0px;}
+			#check-item li{
+				padding: 3px 5px;
+				height: auto;
+				line-height: 30px;
+			}
+        </style>
+</head>
+<body>
+    <div style="padding: 20px;">
+    	<ul id="check-item" style="list-style-type: none;">
+    		<li>正在检查安装信息，请稍后...</li>
+    	</ul>
+    </div>
+	<script src="__PLUGIN_TMPL__/public/assets/layui/layui.all.js"></script>
+	<include file='public/scripts'>
+
+	<script>
+		var sign = {
+				item:0,
+				complete:0,
+				canInstall:true,
+				message:'信息验证中,请稍后',
+			}; // 信号
+		//$('#check-item').append( '<li>' + sign.message + '</li>' );
+		$(document).ready(function(){
+			$.post("{:cmf_plugin_url('SubAppmarket://InstallCheck/getCheckItem')}" , {} , function(data){
+				sign.item = data.length;
+				$.each( data , function( index , value ){
+					check( index );
+				});
+			} ,'json');
+		});
+		var check = function( index ){
+			$.ajax({
+				url:'{:cmf_plugin_url("SubAppmarket://InstallCheck/check")}?index='+index,
+				type:'POST',
+				data:{
+					param:{
+						moduleId:"{$moduleId|default=0}",
+					}
+				},
+				success:function( data ){
+					result = JSON.parse(data);
+					showMessage( result );
+				},
+				complete:function(){
+					sign.complete = sign.complete + 1 ;
+				},
+				error:function(){
+					console.log(1000);
+				}
+			});
+		}
+
+		var clock = setInterval(function(){
+			if( sign.item == sign.complete ){
+				clearInterval( clock );
+				if( sign.complete == sign.item ){
+					$('#check-item').append( '<li>信息检查完成</li>' );
+				}
+			}
+		},1000);
+
+		var showMessage = function( result ){
+			let li = '';
+			let icon  = "" ; 
+			let color = '' ;
+			$.each( result.message , function( index , value ){			 
+				//警告信息 glyphicon glyphicon-info-sign
+				//200是错误信息 201 是警告信息   
+				switch( value.code )
+				{
+					case 200 : 
+						//
+						icon = '<span style="green;" class="glyphicon glyphicon-ok"></span>';
+						color = 'color:#18BC9C;';
+					break;
+					case 201 :
+						//
+						icon = '<span style="color:orange;" class="glyphicon glyphicon-info-sign"></span>' ;
+						color = 'color:orange;';
+						if( value.operate != 'empty' ){
+							sign.item = sign.item + 1;
+							callback( value.operate );
+						}
+					break;
+					default:
+						//错误信息
+						icon = '<span style="color:red;" class="glyphicon glyphicon-remove"></span>' ;
+						color = 'color:red';
+						sign.canInstall = false;
+						sign.message = value.item + ":" + value.msg;
+					break;
+				}
+				li = '<li style="'+color+'">'+ value.item + ':' + value.msg +icon+'</li>';
+				$('#check-item').append( li );
+			});
+		}
+
+		var callback = function ( action )
+		{
+			$.post( action , {} ,function ( data ){
+				showMessage( data );
+				sign.complete = sign.complete + 1 ;
+			} , 'json' );
+		}
+
+	</script>
+</body>
+</html>
+

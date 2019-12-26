@@ -1,0 +1,401 @@
+<?php 
+namespace plugins\module_config\controller; 
+use think\Db;
+use mindplay\annotations\Annotations;
+use plugins\module_config\controller\VisitConfigController;
+
+/**
+ * 模块需求配置控制器
+ */
+class DemandConfigController extends VisitConfigController
+{
+	/**
+	 * 需求配置首页
+	 *@adminMenu(
+     *     'name'   => '需求配置',
+     *     'parent' => 'AdminIndex/index',
+     *     'display'=> true,
+     *     'hasView'=> true,
+     *     'order'  => 1000,
+     *     'icon'   => '',
+     *     'remark' => '需求配置',
+     *     'param'  => ''
+     * )
+	 */
+	public function index()
+	{	
+		$demandList = parent::getConfigList('demand.json');
+		$demandList = $this->selfCheckApiListStatus($demandList);
+		//sort
+		$demandList = parent::sortList($demandList,'status');
+		//get all module info
+		$moduleList = parent::getModuleInfo();
+		//$res = getModuleApiData( "","","",[[11,25,555],3,4]);
+		//dump($demandList);
+		$this->assign('demandList',$demandList);
+		$this->assign('moduleList',$moduleList);
+		return $this->fetch('/visitConfig/demand_index');
+	}
+
+	/**
+	 *  $[name] [<description>]
+	 *检查
+	 */
+	private function selfCheckApiListStatus ($list)
+	{
+		foreach ($list as $vk => $vv) {
+			$status = -1;
+			if( $vv['api'] != '' && !empty($vv['api']) ){
+				$status = parent::methodExists($vv['api']);
+			}
+			$list [$vk] ['status'] = $status;
+		}
+		return $list;
+	}
+
+
+	/**
+	 * 获取系统所有模块信息
+	 *
+	 */
+	protected function getModuleInfo()
+	{
+		return parent::getModuleInfo();
+	}
+
+	/**
+	 * 更新接口配置数据
+	 * @adminMenu(
+     *     'name'   => '更新接口配置数据',
+     *     'parent' => 'AdminIndex/index',
+     *     'display'=> true,
+     *     'hasView'=> false,
+     *     'order'  => 1000,
+     *     'icon'   => '',
+     *     'remark' => '更新接口配置数据',
+     *     'param'  => ''
+     * )
+	 */
+	public function updateDemandConfigData()
+	{
+		try {
+			if( !$this->request->isAjax() ){
+				return zy_json_echo(false,'请求类型错误！');
+			}
+			$res = $this->getDemandAnntationInfo( true );
+			if( isset( $res ['error'] ) ){
+				return zy_json_echo(false,$res[ 'message' ]);
+			}
+			if( false === $res ){
+				return zy_json_echo(false,'配置数据更新失败，请稍后再试！');
+			}
+			return zy_json_echo(true,'配置数据更新成功！');
+		} catch (\Exception $e) {
+			return zy_json_echo(false, $e);
+		}
+			
+	}
+
+	/**
+	 * 需求配置 api地址
+	 */
+	public function configApi()
+	{
+		$data = $this->request->param();
+		$moduleName = $data['moduleName']; //模块标识
+		$api = $data['api'];
+		//get supply list by module symbol 
+		$list = getModuleConfig($moduleName,'config','supply.json');
+		$list = json_decode($list,true);
+		if( empty($list) ){
+			return '未获取到数据';
+		}
+		$list = autoHtmlspecialcharsDecode($list);
+		//check api status
+		$list = parent::checkApiListStatus($list);
+		$this->assign('api',$api);
+		$this->assign('supplyList',$list);
+		return $this->fetch('/visitConfig/config_api');
+	}
+
+
+	/**
+	 * 显示配置详细
+	 */
+	public function configParcular($moduleName,$id)
+	{
+		// read module demand config by module symbol and config id
+		$configList = getModuleConfig($moduleName,'config','demand.json');
+		$configList = json_decode( $configList, true );
+		if( empty( $configList ) || !isset( $configList [$id] ) ){
+			return "未找到配置： 配置标识($moduleName 、 $id) ";
+		}
+
+		$config =  $configList [$id] ;
+		$this->assign('id',$id);
+		$config['remark'] = autoHtmlspecialcharsDecode($config['remark']);
+		$this->assign( 'config', $config );
+		return $this->fetch('/visitConfig/config_particular');
+	}
+
+	/**
+	 * 保存配置详情数据
+	 */
+	public function saveConfigPostData()
+	{
+		if( !$this->request->isPost() ){
+			return zy_json_echo(false,'请求类型错误！');
+		}
+		$data = $this->request->param();
+		$id = $data['id'];
+		$symbol = $data['moduleName'];
+		$update = $data ['update'];
+		$this->saveConfig($symbol,$id,$update);
+	}
+
+
+
+	/**
+	 * 配置保存
+	 */
+	public  function saveConfig($symbol,$id,$data)
+	{
+		$configList = getModuleConfig($symbol,'config','demand.json');
+		$configList = json_decode( $configList, true );
+		if( empty( $configList ) || !isset( $configList [$id] ) ){
+			return zy_json_echo(false,"未找到配置： 配置标识($symbol 、 $id");
+		}
+		foreach ($data as $key => $value) {
+			$configList [$id] [$key] = $value;
+		}
+		$res = saveModuleConfigData($symbol,'config','demand.json',$configList);
+		if( !$res ){
+			return zy_json_echo(false,'保存失败，请稍后再试!');
+		}
+		return zy_json_echo(true,'保存成功！!');
+	}
+
+	/**
+	 * 获取所需配置注释信息
+	 * $update bool 是否更新配置文件
+	 * ==this method return true or false or demand config list
+	 * ==demand list is a multidimensional array
+	 */
+	protected function getDemandAnntationInfo( $update = false )
+	{
+		try {
+			$moduleInfoList = [];
+			Annotations::$config['cache']                 = false;
+	        $annotationManager                            = Annotations::getManager();
+	        $annotationManager->registry['actionInfo']     = 'app\admin\annotation\ActionInfoAnnotation';
+
+	        $moduleRootPath = PLUGINS_PATH;
+
+	        $directorys = scandir($moduleRootPath);
+	        //traversal directory 
+	        foreach ($directorys as $key => $dir) {
+	        	if( $dir == '.' || $dir == '..' ){ continue; }
+
+	        	$moduleName = cmf_parse_name($dir,1);
+	        	$root = "\plugins\\$dir\\controller";
+	        	$subDirectorys = scandir($moduleRootPath.'/'.$dir.'/controller');
+
+	        	foreach ($subDirectorys as $key => $value) {
+	        		if( $value == '.' || $value == '..' ){ continue; }
+
+	        		$value = preg_replace('/\.php$/', '', $value);
+	        		$class = $root."\\$value";
+		        	if( !class_exists($class) ){ continue; }
+
+		        	try {
+
+        				$reflect = new \ReflectionClass($class);
+		        		$methods = $reflect -> getMethods();
+
+        			} catch ( \Exception $e) {
+
+        				throw new \Exception('获取类方法异常；类：'.$class);
+        				break;
+        			}
+		        	if( !empty($methods) ){
+
+		        		foreach ($methods as $mv) {
+		        			try {
+		        				$infoList = Annotations::ofMethod($class, $mv->name, '@actionInfo');
+		        			} catch ( \Exception $e) {
+		        				throw new \Exception('获取接口配置异常：类：'.$class.' 方法：'.$mv);
+		        				break;
+		        			}
+		        			
+				        	if( !empty($infoList) ){
+				        		$list = $infoList[0];
+				        		if( is_object($list) ){
+				        			$list = (array)$list;
+				        		}
+				        		$moduleInfoList = $this->reassemblyConfig($moduleInfoList,$list);        		
+				        	}
+		        		}
+		        	}
+	        	}
+	        }
+        } catch (\Exception $e) {
+			return [ 'error' => false  , 'message' => '更新配置异常：'.$e ];
+		}
+        //Enable update operation  ,write config content to a file in demand.json
+        if( true === $update ){
+        	//this method return true or false
+        	return $this->updateDemandFile( $moduleInfoList );
+        }
+
+        return $moduleInfoList;
+	}
+
+	/**
+	 * 数据重装 
+	 * data format: ['module_name'=>[config content( is An associative array )]]
+	 *
+	 * if shortage required field ,this config will be ignore  ,FLAG [**F001**]
+	 */
+	private function reassemblyConfig( $moduleInfoList = [] , $configList )
+	{
+		
+		$initArray = ['demandName','demandSymbol','explain'] ;
+		sort($initArray);
+		$list = $configList['list'];
+
+		$configList['symbol'] = cmf_parse_name( $configList['symbol']);
+		$moduleName = $configList['symbol'];
+
+		$pos = strpos( $configList['location'], '/');
+		if( !$pos ) return []; 
+
+		$controller = substr( $configList['location'], 0, $pos );
+		$method = substr( $configList['location'], $pos+1 );
+
+		$class = "\\plugins\\$moduleName\\controller\\$controller"."Controller";
+
+		if( !class_exists($class) ) return []; 
+
+		$object = new $class;
+		if( !method_exists( $object, $method ) ) return []; 
+
+		foreach ($list as $lk => $lv ) {
+			$keys = array_intersect($initArray, array_keys($lv));
+			sort($keys);
+			if($initArray != $keys)	continue; //缺少必要字段  ignore config  [**F001**]
+
+			$id = "$controller/$method".'_'."$lk";
+			$temportary ['name'] = $configList['name'];
+			$temportary ['symbol'] = $moduleName;
+			$temportary ['demandName'] = $lv['demandName'];
+			$temportary ['demandSymbol'] = $lv['demandSymbol']; 
+			$temportary ['location'] = $configList['location'];
+			$temportary ['api'] = '';
+			$temportary ['explain'] = $lv['explain'];
+			$temportary ['remark'] = '';
+			$moduleInfoList [$moduleName] [$id] = $temportary; 
+		}	
+		return $moduleInfoList;
+	} 
+
+	/**
+	 * 清空所有模块下的demand.json配置
+	 */
+	private function clearnDemandConfig()
+	{
+		$moduleList = parent::getModuleInfo();
+		foreach ($moduleList as $key => $value) {
+			saveModuleConfigData( $value ['name'] , "config", 'demand.json', [] );
+		}
+	}
+
+	/**
+	 * 更新模块配置文件信息 
+	 * 将新的数据保存到配置文件
+	 * 更新要求：1、以注释数据为主
+	 * 			2、同一条记录更新，保留配置文件中的api/remark数据
+	 * 			3、去除配置文件中多余的数据
+	 */
+	public function updateDemandFile( $configList )
+	{
+		//get all demand.json config of file 
+		$allDemandModuleConfigList = parent::getConfigList('demand.json',true);
+		if( empty( $allDemandModuleConfigList ) && empty( $configList ) ){
+			//清空所有配置
+			$this->clearnDemandConfig();
+			return true;
+		}
+		$allModuleSysmbols = array_keys( $allDemandModuleConfigList  );
+
+		$isOk = true;
+		//dump($configList);exit;
+		foreach ($configList as $key => $value) {
+			//读取已有配置
+			/*$oldConfig = getModuleConfig($key,'config','demand.json');
+			$oldConfig = json_decode($oldConfig,true);*/
+			$oldConfig = isset( $allDemandModuleConfigList [$key] ) ?  $allDemandModuleConfigList [$key]  :  null;
+
+			$allModuleSysmbols = array_merge(array_diff($allModuleSysmbols, array($key)));
+
+			//合并数据   
+			foreach ( $value as $id => $vv  ) {
+				//添加新数据的时候保留 同一条数据下的 api and  remark 等记录
+				if( is_array( $oldConfig ) && isset( $oldConfig [$id] ) ){				
+					$old = $oldConfig[$id];
+					$vv['api'] = ( isset( $old['api']) && !empty($old['api'])  ) ? $old['api'] : '';
+					$vv['remark'] =  ( isset( $old['remark']) && !empty($old['remark'])  ) ? $old['remark'] : '';
+					$configList [$key] [$id] = $vv;
+				}
+			}
+			$res = saveModuleConfigData( $key, "config", 'demand.json', $configList [$key] );
+			if( !$res ){
+				$isOk = false;
+				break;
+			}
+		}
+		//clear unnecessary config data
+		foreach ($allModuleSysmbols as $key) {
+			saveModuleConfigData( $key, "config", 'demand.json', [] );
+		}
+		return $isOk;
+	}
+
+	/**
+	 * 查看接口信息
+	 */
+	public function showApiInfo()
+	{
+		$data = $this->request->param();
+		$symbol = $data['moduleName'];
+		$id = $data['id'];
+		//get supply config
+		$supply = getModuleConfig( $symbol , 'config', 'supply.json');
+		$supply = json_decode( $supply ,true);
+		$this->assign('moduleName',$symbol);
+		$this->assign('id',$id);
+		if( is_array($supply) &&  isset($supply[$id]) ){
+			$this->assign('supplyInfo' , autoHtmlspecialcharsDecode( $supply[$id] ) );
+			return $this->fetch('/visitConfig/demand_particular');
+		}else{
+			return '未获取到数据！';
+		}
+	}
+
+	/**
+	 * 清除接口地址
+	 */
+	public function clearApi( $id , $symbol )
+	{
+		//获取配置数据
+		$list = getModuleConfig( $symbol , 'config', 'demand.json');
+		$list = json_decode( $list ,true);
+		if( !empty( $list ) && isset( $list [$id] ['api'] ) ){
+			$list [ $id ] ['api'] = '';
+			saveModuleConfigData( $symbol, "config", 'demand.json', $list );
+		}else{
+			$this->error('清除接口地址失败，未找到配置！');
+		}
+		$this->success('清除接口地址成功！');
+	}
+
+}

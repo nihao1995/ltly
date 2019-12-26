@@ -1,0 +1,139 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="javascript:;">个人目标</a></li>
+        <li><a href="{:url('Mymub/mbpz')}">添加目标</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('Mymub/Mbindex')}">
+        信息查询:
+        <select class="form-control" name="category" style="width: 140px;">
+            <option value="1">标题</option>
+            <option value="2">目标金额</option>
+        </select>
+        <input type="text" class="form-control" name="keyword" style="width: 200px;"
+               placeholder="请输入关键字...">
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+    </form>
+    <form class="js-ajax-form" action="{:url('Mymub/dels')}" method="post">
+        <div class="table-actions">
+            <notempty name="category">
+                <button class="btn btn-primary btn-sm js-ajax-submit" type="submit"
+                        data-action="{:url('AdminArticle/listOrder')}">{:lang('SORT')}
+                </button>
+            </notempty>
+        </div>
+        <table class="table table-hover table-bordered table-list">
+            <thead>
+            <tr>
+                <th width="15">
+                    <label>
+                        <input type="checkbox" class="js-check-all" data-direction="x" data-checklist="js-check-x" >
+                    </label>
+                </th>
+                <notempty name="category">
+                    <th width="50">{:lang('SORT')}</th>
+                </notempty>
+                <th width="4%">ID</th>
+                <th width="15%">标题</th>
+                <th width="15%">目标金额</th>
+                <th width="18%">起始时间</th>
+                <th width="18%">截止时间</th>
+                <th width="18%">添加时间</th>
+                <th width="10%">操作</th>
+            </tr>
+            </thead>
+
+
+ <volist name='data' id='list'>
+
+
+<tr>
+    <td>
+        <input type="checkbox" class="js-check" data-yid="js-check-y" data-xid="js-check-x" name="ids[]"
+               value="{$list.id}" name="id[]" >
+    </td>
+    <td width="50">{$list.id}</td>
+    <td width="50">{$list.title}</td>
+    <td width="50">{$list.mbmoney}</td>
+    <td width="50"><php>echo date('Y-m-d',$list['start_time'])</php></td>
+    <td width="50"><php>echo date('Y-m-d',$list['end_time'])</php></td>
+    <td width="50"><php>echo date('Y-m-d',$list['create_time'])</php></td>
+    <td width="50"> <div class="table-actions">
+
+        <a href="{:url('Mymub/del','id='.$list.id)}" class="js-ajax-delete">
+        <button class="btn btn-danger btn-sm"
+                 data-msg="您确定删除吗？">
+            {:lang('DELETE')}
+        </button>
+        </a>
+
+
+        <a href="{:url('Mymub/edit','id='.$list.id)}">
+         <input  type="button"  value="编辑" class="btn btn-danger btn-sm" style="background: #0a4b3e;border: 1px solid #0a4b3e">
+        </a>
+    </div></td>
+
+</tr>
+ </volist>
+
+        </table>
+ <input  type="submit"  value="批量删除" class="btn btn-danger btn-sm" style="background: #0a4b3e;border: 1px solid #0a4b3e">
+        
+        <ul class="pagination" style="float: right">{$page}</ul>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+
+    function reloadPage(win) {
+        win.location.reload();
+    }
+
+    $(function () {
+        setCookie("refersh_time", 0);
+        Wind.use('ajaxForm', 'artDialog', 'iframeTools', function () {
+
+
+                if (ids.length == 0) {
+                    art.dialog.through({
+                        id: 'error',
+                        icon: 'error',
+                        content: '您没有勾选信息，无法进行操作！',
+                        cancelVal: '关闭',
+                        cancel: true
+                    });
+                    return false;
+                }
+
+                ids = ids.join(',');
+                art.dialog.open("__ROOT__/index.php?g=portal&m=AdminArticle&a=copy&ids=" + ids, {
+                    title: "批量复制",
+                    width: "300px"
+                });
+            });
+
+
+                if (ids.length == 0) {
+                    art.dialog.through({
+                        id: 'error',
+                        icon: 'error',
+                        content: '您没有勾选信息，无法进行操作！',
+                        cancelVal: '关闭',
+                        cancel: true
+                    });
+                    return false;
+                }
+
+                ids = ids.join(',');
+                art.dialog.open("__ROOT__/index.php?g=portal&m=AdminArticle&a=move&old_term_id={$term.term_id|default=0}&ids=" + ids, {
+                    title: "批量移动",
+                    width: "300px"
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<include file="public@header" />
+<style>.expander{margin-left: -20px;}</style>
+<style type="text/css">
+	.icon{
+		padding: 5px;
+		cursor: pointer;
+		display: none;
+	}
+	tbody tr:hover .icon{
+		display: inline-block;
+	}
+	.tree_role{
+		display: inline-block;
+	}
+	tbody tr p{
+		color: #6892BF;
+	} 
+	tbody tr span.department_name{
+		cursor: pointer;
+	}
+    .border_red{
+        border:1px solid red;
+    }
+</style>
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<div>
+			<h3>{$company.company_name} 部门管理</h3>
+		</div>
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="javascript:;">部门树状图</a></li>
+		</ul>
+			<div class="table_full">
+				<table class="table table-bordered" id="department-tree">
+					<tbody>
+						{$category}
+					</tbody>
+				</table>
+			</div>
+	</div>
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						模态框（Modal）标题
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form id="ajax-form" class="form-horizontal js-ajax-form margin-top-20" action="{:url('department/addpost')}" method="post">
+						<input type="hidden" name="company_id" value="{$company.id}">
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>部门名称</label>
+									<div class="col-md-6 col-sm-10">
+										<input type="text" class="form-control" id="input-name" name="name">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>上级部门</label>
+									<div class="col-md-6 col-sm-10">
+										<!-- <input type="text" class="form-control" id="input-name" name="parent_id"> -->
+										<select name="parent_id" class="form-control">
+											{$category2}
+										</select>
+									</div>
+								</div>
+                                <div class="form-group">
+                                    <label for="input-remark" class="col-sm-2 control-label"><span class="form-required">*</span>部门编号</label>
+                                    <div class="col-md-6 col-sm-10">
+                                        <input type="number" name="department_NO"  id="input-department_NO" class="form-control" required onchange="department_change(this);" readonly> 
+                                    </div>
+                                </div>
+								<div class="form-group">
+									<label for="input-remark" class="col-sm-2 control-label">部门备注</label>
+									<div class="col-md-6 col-sm-10">
+										<textarea style='resize: none;min-height: 150px;' type="text" class="form-control" id="input-remark" name="remark"></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">{:lang('STATUS')}</label>
+									<div class="col-md-6 col-sm-10">
+										<label class="radio-inline">
+											<input type="radio" name="status" checked="checked" value="1"> {:lang('ENABLED')}
+										</label>
+										<label class="radio-inline">
+											<input type="radio" name="status" value="0"> {:lang('DISABLED')}
+										</label>
+									</div>
+								</div>
+							</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+					<button id="ajax-post-add" type="button" class="btn btn-primary">
+						添加部门
+					</button>
+					<button id="ajax-post-edit" type="button" class="btn btn-primary">
+						提交更改
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+    <script src="__STATIC__/js/layer/layer.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+		Wind.css('treeTable');
+	    Wind.use('treeTable', function () {
+	        $("#department-tree").treeTable({
+	            indent: 20,
+	            initialState: "expanded"
+	        });
+	    });
+	    //ajax提交
+	    $('#ajax-post-add').on('click',function() {
+	    	var form = document.getElementById('ajax-form');
+	    	var formData = new FormData(form);
+	    	$.ajax({
+	    		type : 'POST',
+	    		url : "{:url('department/ajaxAdd')}", 
+	    		data: formData,
+	    		processData: false,  
+	    		contentType: false,  
+	    		success : function(data, textStatus, xhr) {
+	    			$("#myModal").modal('hide');
+	    			if (data.code == '1') {
+	    				new Noty({
+	    				    text: data.msg,
+	    				    type: 'success',
+	    				    layout: 'topCenter',
+	    				    modal: true,
+	    				    animation: {
+	    				        open: 'animated bounceInDown', // Animate.css class names
+	    				        close: 'animated bounceOutUp', // Animate.css class names
+	    				    },
+	    				    timeout: 1,
+	    				    callbacks: {
+	    				        afterClose: function () {
+	    				            reloadPage(window);
+	    				        }
+	    				    }
+	    				}).show();
+	    			}else if (data.code == '0') {
+                                art.dialog({
+                                    content: data.msg,
+                                    icon: 'warning',
+                                    ok: function () {
+                                        this.title(data.msg);
+                                        return true;
+                                    }
+                                });
+                            }
+	    		}
+	    	});
+	    });
+
+	    //获取父级ID
+	    $(".department-tree").click(function() {
+	    	var id = $(this).attr('id');
+	    	$("form input[type = 'hidden']").remove();
+	    	$(".modal-body select").val(id);
+	    	$(".modal-body textarea").val("");
+	    	$.get("{:url('department/getDpNO')}",function(data){
+	    		$(".modal-body input[name='department_NO']").val(data);
+	    	});
+	    	
+	    	//$(".modal-body input[type = 'radio']").removeProp('checked');
+	    	$(".modal-body input[name = 'name']").val("");
+	    	$('#ajax-post-edit').hide();
+	    	$('#ajax-post-add').show();
+	    	$("#myModalLabel").text('添加下级部门');
+	    });
+
+	    //ajax获取编辑内容
+	    $('.ajax-edit').click(function() {
+	    	$('#ajax-post-edit').show();
+	    	$('#ajax-post-add').hide();
+	    	$("#myModalLabel").text('修改部门信息');
+	    	var id = $(this).attr('id');
+	    	var inputId = "<input type='hidden' id = 'hiddenInput' name = 'id' value="+id+">";
+	    	$(".modal-body form").append($(inputId));
+	    	var url = $(this).attr('url');
+	    	$.get(url,function (data,status) {
+
+	    		$(".modal-body input[name = 'name']").val(data.name);
+	    		$(".modal-body textarea").val(data.remark);
+	    		$(".modal-body select").val(data.parent_id);
+	    		$(".modal-body input[name='department_NO']").val(data.department_NO);
+	    		$(".modal-body input[type = 'radio']").removeProp('checked');
+	    		$(".modal-body input[value = "+ data.status +"]").prop('checked','checked');
+	    	},'json');
+	    });
+
+	    //ajax提交编辑内容
+	    $("#ajax-post-edit").on('click',function() {
+	    	var form = document.getElementById('ajax-form');
+	    	var formData = new FormData(form);
+	    	$.ajax({
+	    		type : 'POST',
+	    		url : "{:url('department/ajaxEditPost')}", 
+	    		data: formData,
+	    		processData: false,  
+	    		contentType: false,//不可指定编码
+	    		//contentType: "application/x-www-form-urlencoded; charset=utf-8",   
+	    		success : function(data, textStatus, xhr) {
+	    			$("#myModal").modal('hide');
+	    			if (data.code == '1') {
+	    				new Noty({
+	    				    text: data.msg,
+	    				    type: 'success',
+	    				    layout: 'topCenter',
+	    				    modal: true,
+	    				    animation: {
+	    				        open: 'animated bounceInDown', // Animate.css class names
+	    				        close: 'animated bounceOutUp', // Animate.css class names
+	    				    },
+	    				    timeout: 1,
+	    				    callbacks: {
+	    				        afterClose: function () {
+	    				            reloadPage(window);
+	    				        }
+	    				    }
+	    				}).show();
+	    			}else if (data.code == '0') {
+                                art.dialog({
+                                    content: data.msg,
+                                    icon: 'warning',
+                                    ok: function () {
+                                        this.title(data.msg);
+                                        return true;
+                                    }
+                                });
+                            }
+	    		}
+	    	});
+	    });
+	});
+
+	jQuery(document).ready(function($) {
+		$('#node-1').find('a.ajax-edit').hide();
+		$('#node-1').find('a.js-ajax-delete').hide();
+		$('#department-tree .badge').each(function(index, el) {
+			var id = $(this).parent().find('a.department-tree').attr('id');
+			var url = "{:url('Department/getRole')}";
+			var elthis = $(this);
+			url = url.replace('.html','/id/') + id;
+			$.getJSON(url, function(data) {
+				 if (data.count != 0) {
+				 	if (data.user_count!=0) {
+						elthis.html(data.user_count); 
+				 	}
+					for (var i = 0; i < data.name.length; i++) {
+						var str = "<p>" + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"|"+"&nbsp;&nbsp;<span class='glyphicon glyphicon-user'></span>&nbsp;&nbsp;" +data.name[i] + "</p>";
+						elthis.parent().find('.rolelist').append(str);
+					}
+				 }else{
+				 	elthis.parent().find('.rolelist').remove();
+				 }
+			});
+		});
+
+		$('span.department_name').click(function(event) {
+			id = $(this).parent().find('.department-tree').attr('id');
+			var url = "{:url('User/index')}";
+			url = url.replace('.html','/department_id/') + id;
+			location.href = url;
+		});
+	});
+	</script>
+    <script>
+        //检查部门编号
+        function department_change(x){
+            var url="{:url('department/ajaxCheckNo')}";
+            var No=$(x).val();
+            $.post(url,{no:No},function(data){
+                if(data==1){
+                    layer.alert('部门编号：'+No+' 已存在，请重新编号！');
+                    $(x).val("");
+                    $(x).focus();
+                    $(x).addClass('border_red');
+                }else{
+                    $(x).removeClass('border_red');
+                }
+            },'json');
+        }
+    </script>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

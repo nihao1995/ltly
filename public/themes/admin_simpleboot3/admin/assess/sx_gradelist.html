@@ -1,0 +1,41 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('assess/gradelist')}">按月排列</a></li>
+        <li class="active"><a>实习生列表</a></li>
+    </ul>
+    <table class="table table-hover table-bordered table-list margin-top-20">
+        <thead>
+        <tr>
+            <th style="text-align: center" > ID </th>
+            <th style="text-align: center" >名字</th>
+            <th style="text-align: center" >时间</th>
+            <th style="text-align: center" >评分</th>
+            <th style="text-align: center" >操作</th>
+
+        </tr>
+        </thead>
+        <tbody>
+            <volist name='sx_list' id="vo">
+            <tr>
+                <td style="text-align: center;width: 100px;" >{$vo.id|default=""}</td>
+                <td style="text-align: center" >{$vo.user_login|default=""}</td>
+                <td style="text-align: center" ><?php if(!empty($vo['assess_time'])) {?>{$vo.assess_time|date="Y-m-d",###}<?php }?></td>
+                <td style="text-align: center" >{$vo.sum|default=""}</td>
+                <td style="text-align: center" > <a href="{:url('assess/sx_grade')}?userid={$vo.id}">实习评分</a></td>
+            </tr>
+        </volist>
+        </tbody>
+
+    </table>
+
+    <div class="table-actions">
+        <ul class="pagination">{$page|default=''}</ul>
+    </div>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+
+</body>
+</html>
