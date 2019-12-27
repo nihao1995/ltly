@@ -38,5 +38,6 @@ define('RUNTIME_PATH', CMF_ROOT . 'data/runtime/');
 define('THINKCMF_VERSION', '5.0.170925');
 // 加载框架基础文件
 require CMF_ROOT . 'simplewind/thinkphp/base.php';
+$i=1;
 // 执行应用
 \think\App::run()->send();
